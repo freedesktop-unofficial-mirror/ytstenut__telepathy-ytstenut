@@ -1,0 +1,11 @@
+prefix=/nonexistent
+exec_prefix=/nonexistent
+abs_top_builddir=@abs_top_builddir@
+abs_top_srcdir=@abs_top_srcdir@
+
+Name: telepathy-foo-glib (uninstalled copy)
+Description: Glib utility library for Foo D-Bus interfaces
+Version: @VERSION@
+Requires: telepathy-glib, dbus-glib-1 >= 0.73, glib-2.0 >= 2.16, gobject-2.0 >= 2.16
+Libs: ${abs_top_builddir}/telepathy-foo-glib/libtelepathy-foo-glib.la
+Cflags: -I${abs_top_srcdir} -I${abs_top_builddir}

@@ -1,0 +1,19 @@
+<tp:spec
+  xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+  <tp:title>Telepathy Extensions for Foo</tp:title>
+  <tp:version>0.1.0</tp:version>
+
+  <tp:copyright>Copyright © 2010 Your Name Here</tp:copyright>
+
+  <tp:license xmlns="http://www.w3.org/1999/xhtml">
+    <p>Your license text here.</p>
+  </tp:license>
+
+  <tp:section name="Draft interfaces from the Telepathy spec">
+    <xi:include href="Connection_Future.xml"/>
+  </tp:section>
+
+  <xi:include href="../spec/errors.xml"/>
+  <xi:include href="../spec/types.xml"/>
+</tp:spec>

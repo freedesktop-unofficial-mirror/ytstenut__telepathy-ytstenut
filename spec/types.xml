@@ -1,0 +1,10 @@
+<tp:generic-types
+  xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
+
+  <tp:simple-type name="Base64" type="s">
+    <tp:docstring>
+      A string of base64.
+    </tp:docstring>
+  </tp:simple-type>
+</tp:generic-types>
+<!-- vim:set sw=2 sts=2 et ft=xml: -->
