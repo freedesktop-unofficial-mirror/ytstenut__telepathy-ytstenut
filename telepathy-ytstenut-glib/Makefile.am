@@ -1,19 +1,19 @@
 pkgconfigdir = ${libdir}/pkgconfig
-pkgconfig_DATA = telepathy-foo-glib.pc
+pkgconfig_DATA = telepathy-ytstenut-glib.pc
 
-tpfooglibincludedir=$(includedir)/telepathy-foo/telepathy-foo-glib
-genincludedir=$(tpfooglibincludedir)/_gen
+tpytstenutglibincludedir=$(includedir)/telepathy-ytstenut/telepathy-ytstenut-glib
+genincludedir=$(tpytstenutglibincludedir)/_gen
 tools_dir = $(top_srcdir)/tp-glib-tools
 
-lib_LTLIBRARIES = libtelepathy-foo-glib.la
+lib_LTLIBRARIES = libtelepathy-ytstenut-glib.la
 
-libtelepathy_foo_glib_la_SOURCES = \
+libtelepathy_ytstenut_glib_la_SOURCES = \
     errors.c \
     errors.h \
-    telepathy-foo-glib.c \
-    telepathy-foo-glib.h
+    telepathy-ytstenut-glib.c \
+    telepathy-ytstenut-glib.h
 
-nodist_libtelepathy_foo_glib_la_SOURCES = \
+nodist_libtelepathy_ytstenut_glib_la_SOURCES = \
     _gen/signals-marshal.c \
     _gen/signals-marshal.h \
     _gen/signals-marshal.list \
@@ -25,16 +25,16 @@ nodist_libtelepathy_foo_glib_la_SOURCES = \
     _gen/svc.h \
     _gen/svc.c
 
-libtelepathy_foo_glib_la_LDFLAGS = \
+libtelepathy_ytstenut_glib_la_LDFLAGS = \
     -version-info "$(LT_CURRENT)":"$(LT_REVISION)":"$(LT_AGE)"
 
 BUILT_SOURCES = \
     _gen/all.xml \
-    $(nodist_libtelepathy_foo_glib_la_SOURCES)
+    $(nodist_libtelepathy_ytstenut_glib_la_SOURCES)
 
-tpfooglibinclude_HEADERS = \
+tpytstenutglibinclude_HEADERS = \
     errors.h \
-    telepathy-foo-glib.h
+    telepathy-ytstenut-glib.h
 
 nodist_geninclude_HEADERS = \
     _gen/enums.h \
@@ -62,12 +62,12 @@ _gen/all.xml: all.xml $(wildcard $(top_srcdir)/spec/*.xml)
 _gen/svc.c _gen/svc.h: _gen/all.xml $(tools_dir)/glib-ginterface-gen.py \
 	Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-ginterface-gen.py \
-		--filename=_gen/svc --signal-marshal-prefix=_foo \
+		--filename=_gen/svc --signal-marshal-prefix=_ytstenut \
 		--include='<telepathy-glib/dbus.h>' \
 		--include='"_gen/signals-marshal.h"' \
 		--allow-unstable \
 		--not-implemented-func='tp_dbus_g_method_return_not_implemented' \
-		$< Foo_Svc_
+		$< Ytstenut_Svc_
 
 _gen/signals-marshal.list: _gen/all.xml \
 	$(tools_dir)/glib-signals-marshal-gen.py \
@@ -75,24 +75,24 @@ _gen/signals-marshal.list: _gen/all.xml \
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-signals-marshal-gen.py $< > $@
 
 _gen/signals-marshal.h: _gen/signals-marshal.list Makefile.am
-	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=_foo_marshal $< > $@
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=_ytstenut_marshal $< > $@
 
 _gen/signals-marshal.c: _gen/signals-marshal.list Makefile.am
 	$(AM_V_GEN){ echo '#include "_gen/signals-marshal.h"' && \
-	$(GLIB_GENMARSHAL) --body --prefix=_foo_marshal $< ; } > $@
+	$(GLIB_GENMARSHAL) --body --prefix=_ytstenut_marshal $< ; } > $@
 
 _gen/enums.h: _gen/all.xml $(tools_dir)/c-constants-gen.py \
 	Makefile.am
-	$(AM_V_GEN)$(PYTHON) $(tools_dir)/c-constants-gen.py Foo $< > $@
+	$(AM_V_GEN)$(PYTHON) $(tools_dir)/c-constants-gen.py Ytstenut $< > $@
 
 _gen/interfaces.h _gen/interfaces-body.h: _gen/all.xml \
 	$(tools_dir)/glib-interfaces-gen.py \
 	Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-interfaces-gen.py \
-		Foo _gen/interfaces-body.h _gen/interfaces.h $<
+		Ytstenut _gen/interfaces-body.h _gen/interfaces.h $<
 
 _gen/gtypes.h _gen/gtypes-body.h: _gen/all.xml \
 	$(tools_dir)/glib-gtypes-generator.py Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-gtypes-generator.py \
-		$< _gen/gtypes Foo
+		$< _gen/gtypes Ytstenut
 

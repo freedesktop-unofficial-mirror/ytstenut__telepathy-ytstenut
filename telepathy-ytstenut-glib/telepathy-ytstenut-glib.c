@@ -1,4 +1,4 @@
-#include "telepathy-foo-glib.h"
+#include "telepathy-ytstenut-glib.h"
 
 /* auto-generated stubs */
 #include "_gen/gtypes-body.h"

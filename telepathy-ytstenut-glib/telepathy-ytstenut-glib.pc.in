@@ -3,9 +3,9 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: telepathy-foo-glib
-Description: Glib utility library for Foo D-Bus interfaces
+Name: telepathy-ytstenut-glib
+Description: Glib utility library for Ytstenut D-Bus interfaces
 Version: @VERSION@
 Requires: telepathy-glib, dbus-glib-1 >= 0.73, glib-2.0 >= 2.16, gobject-2.0 >= 2.16
-Libs: -L${libdir} -ltelepathy-foo-glib
-Cflags: -I${includedir}/telepathy-foo
+Libs: -L${libdir} -ltelepathy-ytstenut-glib
+Cflags: -I${includedir}/telepathy-ytstenut

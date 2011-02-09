@@ -11,7 +11,7 @@
   </tp:license>
 
   <tp:section name="Draft interfaces from the Telepathy spec">
-    <xi:include href="Connection_Future.xml"/>
+    <xi:include href="Channel_Type_Ytstenut.xml"/>
   </tp:section>
 
   <xi:include href="errors.xml"/>

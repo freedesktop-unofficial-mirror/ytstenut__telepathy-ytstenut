@@ -9,8 +9,8 @@
 Makefile
 Makefile.in
 TAGS
-TelepathyFooQt4/TelepathyFooQt4-uninstalled.pc
-TelepathyFooQt4/TelepathyFooQt4.pc
+TelepathyYtstenutQt4/TelepathyYtstenutQt4-uninstalled.pc
+TelepathyYtstenutQt4/TelepathyYtstenutQt4.pc
 _gen
 aclocal.m4
 autom4te.cache
@@ -37,6 +37,6 @@ m4/lt~obsolete.m4
 missing
 stamp-h1
 tags
-telepathy-foo-glib/telepathy-foo-glib-uninstalled.pc
-telepathy-foo-glib/telepathy-foo-glib.pc
+telepathy-ytstenut-glib/telepathy-ytstenut-glib-uninstalled.pc
+telepathy-ytstenut-glib/telepathy-ytstenut-glib.pc
 tp-glib-tools/telepathy-glib-env

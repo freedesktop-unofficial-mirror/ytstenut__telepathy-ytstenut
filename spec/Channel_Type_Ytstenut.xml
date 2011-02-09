@@ -1,0 +1,154 @@
+<?xml version="1.0" ?>
+<node name="/Channel_Type_Ytstenut" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
+  <tp:copyright> Copyright © 2005-2009 Collabora Limited </tp:copyright>
+  <tp:license xmlns="http://www.w3.org/1999/xhtml">
+    <p>This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.</p>
+
+<p>This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</p>
+  </tp:license>
+  <interface name="com.meego.xpmn.ytstenut.Telepathy.Channel.Type.Ytstenut">
+    <tp:requires interface="org.freedesktop.Telepathy.Channel"/>
+
+    <tp:simple-type name="Message_ID" type="u" array-name="Message_ID_List">
+      <tp:docstring>
+        A unique-per-channel identifier for an incoming message. These
+        SHOULD be allocated in a way that minimizes collisions (in particular,
+        message IDs SHOULD NOT be re-used until all of the 32-bit integer
+        space has already been used).
+      </tp:docstring>
+    </tp:simple-type>
+
+    <tp:simple-type name="Message_Body" type="s" array-name="Message_Body">
+      <tp:docstring>XXX</tp:docstring>
+    </tp:simple-type>
+
+    <tp:mapping name="Message_Attrs" array-name="Message_Attrs_List">
+      <tp:docstring>XXX</tp:docstring>
+      <tp:member type="s" name="Name"/>
+      <tp:member type="s" name="Value"/>
+    </tp:mapping>
+
+    <tp:struct name="Pending_Message" array-name="Pending_Message_List">
+      <tp:docstring>A pending message ID and a corresponding message.</tp:docstring>
+      <tp:member type="u" tp:type="Message_ID" name="Identifier"/>
+      <tp:member type="a{ss}s" tp:type="Message" name="Message"/>
+    </tp:struct>
+
+    <tp:struct name="Message" array-name="Message_List">
+      <tp:docstring>XXX</tp:docstring>
+      <tp:member type="a{ss}" tp:type="Message_Attrs" name="Attributes"/>
+      <tp:member type="s" tp:type="Message_Body" name="Body"/>
+    </tp:struct>
+
+    <method name="AcknowledgeMessages"
+      tp:name-for-bindings="Acknowledge_Messages">
+      <arg direction="in" name="IDs" type="au" tp:type="Message_ID[]">
+        <tp:docstring>XXX
+          The IDs of the messages to acknowledge
+        </tp:docstring>
+      </arg>
+      <tp:docstring>
+        Inform the channel that you have handled messages so they can be removed
+        from the pending queue.
+      </tp:docstring>
+      <tp:possible-errors>
+        <tp:error name="org.freedesktop.Telepathy.Error.InvalidArgument">
+          <tp:docstring>
+            A given message ID was not found, so no action was taken
+          </tp:docstring>
+        </tp:error>
+      </tp:possible-errors>
+    </method>
+
+    <property name="PendingMessages" type="a(a{ss}s)" access="read"
+      tp:type="Message[]" tp:name-for-bindings="Pending_Messages">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">XXX</tp:docstring>
+    </property>
+
+    <signal name="MessageReceived" tp:name-for-bindings="Message_Received">
+      <arg name="ID" type="u" tp:type="Message_ID">
+        <tp:docstring>
+          A numeric identifier for acknowledging the message
+        </tp:docstring>
+      </arg>
+      <arg name="Message" type="(a{ss}s)" tp:type="Message">
+        <tp:docstring>XXX</tp:docstring>
+      </arg>
+      <tp:docstring>XXX</tp:docstring>
+    </signal>
+
+    <method name="SendMessage" tp:name-for-bindings="Send_Message">
+      <arg direction="in" name="Message" type="(a{ss}s)" tp:type="Message">
+        <tp:docstring>XXX</tp:docstring>
+      </arg>
+      <arg direction="out" name="Token" type="s">
+        <tp:docstring>XXX</tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">XXX</tp:docstring>
+      <tp:possible-errors>
+        <tp:error name="org.freedesktop.Telepathy.Error.Disconnected"/>
+        <tp:error name="org.freedesktop.Telepathy.Error.NetworkError"/>
+        <tp:error name="org.freedesktop.Telepathy.Error.InvalidArgument"/>
+        <tp:error name="org.freedesktop.Telepathy.Error.PermissionDenied"/>
+      </tp:possible-errors>
+    </method>
+
+<!--
+    <tp:enum name="Channel_Text_Send_Error" type="u">
+      <tp:enumvalue suffix="Unknown" value="0">
+        <tp:docstring>
+        An unknown error occurred
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Offline" value="1">
+        <tp:docstring>
+        The requested contact was offline
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Invalid_Contact" value="2">
+        <tp:docstring>
+        The requested contact is not valid
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Permission_Denied" value="3">
+        <tp:docstring>
+        The user does not have permission to speak on this channel
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Too_Long" value="4">
+        <tp:docstring>
+        The outgoing message was too long and was rejected by the server
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Not_Implemented" value="5">
+        <tp:docstring>
+        The channel doesn't support sending text messages to the requested
+        contact
+        </tp:docstring>
+      </tp:enumvalue>
+    </tp:enum>
+-->
+
+    <signal name="MessageSent" tp:name-for-bindings="Message_Sent">
+      <arg name="Token" type="s">
+        <tp:docstring>XXX</tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Signals that a message has been submitted for sending.</p>
+      </tp:docstring>
+    </signal>
+
+    <tp:docstring xmlns="http://www.w3.org/1999/xhtml">XXX</tp:docstring>
+
+  </interface>
+</node>

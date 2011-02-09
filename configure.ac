@@ -9,10 +9,10 @@ AC_PREREQ([2.59])
 #   make the release, tag it
 #   set nano_version to 1
 
-m4_define([tp_foo_major_version], [0])
-m4_define([tp_foo_minor_version], [0])
-m4_define([tp_foo_micro_version], [0])
-m4_define([tp_foo_nano_version], [1])
+m4_define([tp_ytstenut_major_version], [0])
+m4_define([tp_ytstenut_minor_version], [0])
+m4_define([tp_ytstenut_micro_version], [0])
+m4_define([tp_ytstenut_nano_version], [1])
 
 # If library source has changed since last release, increment revision
 # If interfaces have been added, removed or changed since last release,
@@ -26,18 +26,18 @@ m4_define([tp_foo_nano_version], [1])
 # (we don't guarantee that we won't add ABI then remove it again, if it was
 # never seen in a release).
 
-m4_define([tp_foo_lt_current], [0])
-m4_define([tp_foo_lt_revision], [0])
-m4_define([tp_foo_lt_age], [0])
+m4_define([tp_ytstenut_lt_current], [0])
+m4_define([tp_ytstenut_lt_revision], [0])
+m4_define([tp_ytstenut_lt_age], [0])
 
 # Some magic
-m4_define([tp_foo_base_version],
-          [tp_foo_major_version.tp_foo_minor_version.tp_foo_micro_version])
-m4_define([tp_foo_version],
-          [m4_if(tp_foo_nano_version, 0, [tp_foo_base_version],
-              [tp_foo_base_version].[tp_foo_nano_version])])
+m4_define([tp_ytstenut_base_version],
+          [tp_ytstenut_major_version.tp_ytstenut_minor_version.tp_ytstenut_micro_version])
+m4_define([tp_ytstenut_version],
+          [m4_if(tp_ytstenut_nano_version, 0, [tp_ytstenut_base_version],
+              [tp_ytstenut_base_version].[tp_ytstenut_nano_version])])
 
-AC_INIT([Telepathy-Foo], [tp_foo_version], [foo@projects.maemo.org])
+AC_INIT([Telepathy-Ytstenut], [tp_ytstenut_version], [ytstenut@projects.maemo.org])
 AC_LANG([C++])
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -66,9 +66,9 @@ AC_PROG_CC_STDC
 AM_PROG_CC_C_O
 AC_LANG_POP([C])
 
-LT_CURRENT=tp_foo_lt_current
-LT_REVISION=tp_foo_lt_revision
-LT_AGE=tp_foo_lt_age
+LT_CURRENT=tp_ytstenut_lt_current
+LT_REVISION=tp_ytstenut_lt_revision
+LT_AGE=tp_ytstenut_lt_age
 AC_SUBST([LT_CURRENT])
 AC_SUBST([LT_REVISION])
 AC_SUBST([LT_AGE])
@@ -79,7 +79,7 @@ COMPILER_COVERAGE
 LINKER_OPTIMISATIONS
 LINKER_VERSION_SCRIPT
 
-ifelse(tp_foo_nano_version, 0,
+ifelse(tp_ytstenut_nano_version, 0,
     [ official_release=yes ],
     [ official_release=no ])
 AM_CONDITIONAL([OFFICIAL_RELEASE], [test "x$official_release" = xyes])
@@ -140,11 +140,11 @@ PKG_CHECK_MODULES(TP_QT4, [TelepathyQt4])
 AC_SUBST(TP_QT4_CFLAGS)
 AC_SUBST(TP_QT4_LIBS)
 
-dnl We want examples to be able to use TP_FOO_QT4_CFLAGS as though they
+dnl We want examples to be able to use TP_YTSTENUT_QT4_CFLAGS as though they
 dnl were independent programs that got them from pkgconfig; AC_SUBST'ing
-dnl TP_FOO_QT4_LIBS would interfere with dependency tracking, so don't do that
-TP_FOO_QT4_CFLAGS='-I${top_builddir}/TelepathyFooQt4 -I${top_srcdir}'
-AC_SUBST(TP_FOO_QT4_CFLAGS)
+dnl TP_YTSTENUT_QT4_LIBS would interfere with dependency tracking, so don't do that
+TP_YTSTENUT_QT4_CFLAGS='-I${top_builddir}/TelepathyYtstenutQt4 -I${top_srcdir}'
+AC_SUBST(TP_YTSTENUT_QT4_CFLAGS)
 
 dnl Check for Glib
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >= 2.16])
@@ -192,10 +192,10 @@ AC_OUTPUT([
     Makefile
     tp-qt4-tools/Makefile
     tp-glib-tools/Makefile
-    TelepathyFooQt4/Makefile
-    TelepathyFooQt4/TelepathyFooQt4.pc
-    TelepathyFooQt4/TelepathyFooQt4-uninstalled.pc
-    telepathy-foo-glib/Makefile
-    telepathy-foo-glib/telepathy-foo-glib.pc
-    telepathy-foo-glib/telepathy-foo-glib-uninstalled.pc
+    TelepathyYtstenutQt4/Makefile
+    TelepathyYtstenutQt4/TelepathyYtstenutQt4.pc
+    TelepathyYtstenutQt4/TelepathyYtstenutQt4-uninstalled.pc
+    telepathy-ytstenut-glib/Makefile
+    telepathy-ytstenut-glib/telepathy-ytstenut-glib.pc
+    telepathy-ytstenut-glib/telepathy-ytstenut-glib-uninstalled.pc
 ])

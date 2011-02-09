@@ -3,9 +3,9 @@ exec_prefix=/nonexistent
 abs_top_builddir=@abs_top_builddir@
 abs_top_srcdir=@abs_top_srcdir@
 
-Name: Telepathy-Foo-Qt4 (uninstalled copy)
-Description: Qt4 utility library for Foo D-Bus interfaces
+Name: Telepathy-Ytstenut-Qt4 (uninstalled copy)
+Description: Qt4 utility library for Ytstenut D-Bus interfaces
 Version: @VERSION@
 Requires: TelepathyQt4, QtCore >= 4.5, QtDBus >= 4.5
-Libs: ${abs_top_builddir}/TelepathyFooQt4/libtelepathy-foo-qt4.la
+Libs: ${abs_top_builddir}/TelepathyYtstenutQt4/libtelepathy-ytstenut-qt4.la
 Cflags: -I${abs_top_srcdir} -I${abs_top_builddir}
