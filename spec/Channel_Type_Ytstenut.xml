@@ -38,7 +38,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     </tp:mapping>
 
     <property name="RequestType" access="read" tp:type="Request_Type"
-      tp:name-for-bindings="Request_Type" type="s">
+      tp:name-for-bindings="Request_Type" type="u">
       <tp:docstring>
         The &lt;iq&gt; type of the request message. IMMUTABLE
       </tp:docstring>
