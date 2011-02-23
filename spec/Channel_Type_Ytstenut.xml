@@ -38,23 +38,26 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     </tp:mapping>
 
     <property name="RequestType" access="read" tp:type="Request_Type"
-      tp:name-for-bindings="Request_Type" type="u">
+      tp:name-for-bindings="Request_Type" type="u"
+      tp:immutable='yes' tp:requestable='yes'>
       <tp:docstring>
-        The &lt;iq&gt; type of the request message. IMMUTABLE
+        The &lt;iq&gt; type of the request message.
       </tp:docstring>
     </property>
 
     <property name="RequestAttributes" access="read" tp:type="Message_Attrs"
-      tp:name-for-bindings="Request_Attributes" type="a{ss}">
+      tp:name-for-bindings="Request_Attributes" type="a{ss}"
+      tp:immutable='yes' tp:requestable='yes'>
       <tp:docstring>
-        The attributes present on the Ytstenut request message. IMMUTABLE
+        The attributes present on the Ytstenut request message.
       </tp:docstring>
     </property>
 
     <property name="RequestBody" access="read" tp:type="Message_Body"
-      tp:name-for-bindings="Request_Body" type="s">
+      tp:name-for-bindings="Request_Body" type="s"
+      tp:immutable='yes' tp:requestable='yes'>
       <tp:docstring>
-        The UTF-8 encoded XML body of the Ytstenut request message. IMMUTABLE
+        The UTF-8 encoded XML body of the Ytstenut request message.
       </tp:docstring>
     </property>
 
