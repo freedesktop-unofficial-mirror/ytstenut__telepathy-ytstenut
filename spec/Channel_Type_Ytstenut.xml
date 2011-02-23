@@ -168,9 +168,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     </tp:enum>
 
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-      <p>When a channel of this type is created (via CreateChannel) the
-      RequestType, RequestAttributes (and optionally RequestBody) should be
-      specified. The request is sent while the channel is created.</p>
+      <p>When a channel of this type is created by calling
+        <code>CreateChannel()</code>, the
+        <tp:member-ref>RequestType</tp:member-ref>,
+        <tp:member-ref>RequestAttributes</tp:member-ref> (and optionally
+        <tp:member-ref>RequestBody</tp:member-ref>) properties should be
+        specified. The request is sent while the channel is created.</p>
     </tp:docstring>
 
   </interface>
