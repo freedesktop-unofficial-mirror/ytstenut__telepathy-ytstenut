@@ -57,41 +57,71 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       tp:name-for-bindings="Request_Body" type="s"
       tp:immutable='yes' tp:requestable='yes'>
       <tp:docstring>
-        The UTF-8 encoded XML body of the Ytstenut request message.
-      </tp:docstring>
-    </property>
-
-    <property name="ReplyType" access="read" tp:type="Reply_Type"
-      tp:name-for-bindings="Reply_Type" type="u">
-      <tp:docstring>
-        The &lt;iq&gt; type of the reply message. Is unknown until a reply is
-        sent or received.
-      </tp:docstring>
-    </property>
-
-    <property name="ReplyAttributes" access="read" tp:type="Message_Attrs"
-      tp:name-for-bindings="Reply_Attributes" type="a{ss}">
-      <tp:docstring>
-        The attributes present on the Ytstenut reply message. Is empty until a
-        reply is sent or received.
-      </tp:docstring>
-    </property>
-
-    <property name="ReplyBody" access="read" tp:type="Message_Body"
-      tp:name-for-bindings="Reply_Body" type="s">
-      <tp:docstring>
-        The UTF-8 encoded XML body of the Ytstenut reply message. Is empty until
-        a reply is sent or received.
+        The UTF-8 encoded XML body of the Ytstenut request message. The
+          top level element must have the name 'message' and be of the namespace
+          'urn:ytstenut:message'. Any attributes in the RequestAttributes property
+          will override any attributes of the same names on the top level
+          element. If an empty string is used as the RequestBody then a default
+          body will be used instead.
       </tp:docstring>
     </property>
 
     <signal name="Replied" tp:name-for-bindings="Replied">
+      <arg name="Attributes" type="a{ss}" tp:type="Message_Attrs">
+        <tp:docstring>
+          The attributes present on the Ytstenut result message.
+        </tp:docstring>
+      </arg>
+      <arg name="Body" type="s" tp:type="Message_Body">
+        <tp:docstring>
+          The UTF-8 encoded XML body of the Ytstenut result message, including
+          the attributes in the 
+        </tp:docstring>
+      </arg>
       <tp:docstring>
-        This signal is emitted when a reply is sent or received. The ReplyType,
-        ReplyAttributes, and ReplyBody properties are set when this signal
-        is emitted.
+        This signal is emitted when a &lt;iq type='result'&gt; is received in
+        response to a request sent on this channel. This signal is only
+        emitted on the initiating side of the channel.
       </tp:docstring>
     </signal>
+
+    <signal name="Failed" tp:name-for-bindings="Failed">
+      <arg name="ErrorType" tp:type="Error_Type"
+        tp:name-for-bindings="Error_Type" type="u">
+        <tp:docstring>
+          The type of error which defines the appropriate action to take.
+        </tp:docstring>
+      </arg>
+      <arg name="StanzaErrorName" type="s"
+        tp:name-for-bindings="Stanza_Error_Name">
+        <tp:docstring>
+          The name of the specific error.
+        </tp:docstring>
+      </arg>
+      <arg name="YtstenutErrorName" type="s"
+        tp:name-for-bindings="Ytstenut_Error_Name">
+        <tp:docstring>
+          A more detailed Ytstenut error name.
+        </tp:docstring>
+      </arg>
+      <arg name="Text" type="s" tp:name-for-bindings="Text">
+        <tp:docstring>
+          Textual details of the error.
+        </tp:docstring>
+      </arg>
+      <tp:docstring>
+        This signal is emitted when a error is received. This signal is only
+        emitted on the initiating side of the channel.
+      </tp:docstring>
+    </signal>
+
+    <method name="Request" tp:name-for-bindings="Request">
+      <tp:docstring>
+        Send the Ytstenut request (represented by the RequestType,
+        RequestAttributes and RequestBody) properties to the other
+        side of this channel.
+      </tp:docstring>
+    </method>
 
     <method name="Reply" tp:name-for-bindings="Reply">
       <arg direction="in" name="Attributes" type="a{ss}"
@@ -111,36 +141,34 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
         </tp:docstring>
       </arg>
       <tp:docstring>
-        Send a &lt;iq&gt; result to the Ytstenut request. Either side of this
-        channel can call this function. The Replied signal will be emitted,
-        and the ReplyType, ReplyAttributes, and ReplyBody will be set.
+        Send a &lt;iq&gt; result to the Ytstenut request.
       </tp:docstring>
-      <tp:possible-errors>
-        <tp:error name="org.freedesktop.Telepathy.Error.Disconnected"/>
-        <tp:error name="org.freedesktop.Telepathy.Error.NetworkError"/>
-        <tp:error name="org.freedesktop.Telepathy.Error.InvalidArgument"/>
-        <!-- TODO: Incomplete -->
-      </tp:possible-errors>
     </method>
 
     <method name="Fail" tp:name-for-bindings="Fail">
-      <arg direction="in" name="Attributes" tp:type="Message_Attrs"
-        type="a{ss}">
+      <arg name="ErrorType" tp:type="Error_Type" direction="in"
+        tp:name-for-bindings="Error_Type" type="u">
         <tp:docstring>
-          The attributes to set on the Ytstenut reply error message.
+          The type of error which defines the appropriate action to take.
         </tp:docstring>
       </arg>
-      <tp:docstring>
-        Send a &lt;iq&gt; error to the Ytstenut request. Either side of this
-        channel can call this function. The Replied signal will be emitted,
-        and the ReplyType, ReplyAttributes, and ReplyBody will be set.
-      </tp:docstring>
-      <tp:possible-errors>
-        <tp:error name="org.freedesktop.Telepathy.Error.Disconnected"/>
-        <tp:error name="org.freedesktop.Telepathy.Error.NetworkError"/>
-        <tp:error name="org.freedesktop.Telepathy.Error.InvalidArgument"/>
-        <!-- TODO: Incomplete -->
-      </tp:possible-errors>
+      <arg name="StanzaErrorName" type="s" direction="in"
+        tp:name-for-bindings="Stanza_Error_Name">
+        <tp:docstring>
+          The name of the specific error.
+        </tp:docstring>
+      </arg>
+      <arg name="YtstenutErrorName" type="s" direction="in"
+        tp:name-for-bindings="Ytstenut_Error_Name">
+        <tp:docstring>
+          A more detailed Ytstenut error name.
+        </tp:docstring>
+      </arg>
+      <arg name="Text" type="s" tp:name-for-bindings="Text" direction="in">
+        <tp:docstring>
+          Textual details of the error.
+        </tp:docstring>
+      </arg>
     </method>
 
     <tp:enum name="Request_Type" type="u">
@@ -158,6 +186,24 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:enumvalue>
       <tp:enumvalue suffix="Error" value="2">
         <tp:docstring>The iq reply is of type 'error'</tp:docstring>
+      </tp:enumvalue>
+    </tp:enum>
+
+    <tp:enum name="Error_Type" type="u">
+      <tp:enumvalue suffix="Cancel" value="0">
+        <tp:docstring>Do not retry (the error is unrecoverable)</tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Continue" value="1">
+        <tp:docstring>Proceed (the condition was only a warning)</tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Modify" value="2">
+        <tp:docstring>Retry after changing the data sent</tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Auth" value="3">
+        <tp:docstring>Retry after providing credentials</tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Wait" value="4">
+        <tp:docstring>Retry after waiting (the error is temporary)</tp:docstring>
       </tp:enumvalue>
     </tp:enum>
 
