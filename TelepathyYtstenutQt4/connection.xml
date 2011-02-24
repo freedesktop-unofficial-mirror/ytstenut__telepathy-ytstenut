@@ -4,6 +4,6 @@
 
 <tp:title>Connection interfaces</tp:title>
 
-<xi:include href="../spec/Channel_Type_Ytstenut.xml"/>
+<xi:include href="../spec/Channel.xml"/>
 
 </tp:spec>
