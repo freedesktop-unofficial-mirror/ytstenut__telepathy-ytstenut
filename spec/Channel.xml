@@ -144,9 +144,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     </method>
 
     <tp:enum name="Request_Type" type="u">
-      <tp:enumvalue suffix="Unknown" value="0">
-        <tp:docstring>Invalid or unknown value.</tp:docstring>
-      </tp:enumvalue>
       <tp:enumvalue suffix="Get" value="1">
         <tp:docstring>The iq request is of type 'get'</tp:docstring>
       </tp:enumvalue>
@@ -156,9 +153,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     </tp:enum>
 
     <tp:enum name="Reply_Type" type="u">
-      <tp:enumvalue suffix="Unknown" value="0">
-        <tp:docstring>Invalid or unknown value.</tp:docstring>
-      </tp:enumvalue>
       <tp:enumvalue suffix="Result" value="1">
         <tp:docstring>The iq reply is of type 'result'</tp:docstring>
       </tp:enumvalue>
