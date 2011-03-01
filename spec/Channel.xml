@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <node name="/Channel" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
-  <tp:copyright> Copyright © 2005-2009 Collabora Limited </tp:copyright>
+  <tp:copyright> Copyright © 2011 Collabora Limited </tp:copyright>
   <tp:license xmlns="http://www.w3.org/1999/xhtml">
     <p>This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -190,19 +190,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     </tp:enum>
 
     <tp:enum name="Error_Type" type="u">
-      <tp:enumvalue suffix="Cancel" value="0">
+      <tp:enumvalue suffix="Cancel" value="1">
         <tp:docstring>Do not retry (the error is unrecoverable)</tp:docstring>
       </tp:enumvalue>
-      <tp:enumvalue suffix="Continue" value="1">
+      <tp:enumvalue suffix="Continue" value="2">
         <tp:docstring>Proceed (the condition was only a warning)</tp:docstring>
       </tp:enumvalue>
-      <tp:enumvalue suffix="Modify" value="2">
+      <tp:enumvalue suffix="Modify" value="3">
         <tp:docstring>Retry after changing the data sent</tp:docstring>
       </tp:enumvalue>
-      <tp:enumvalue suffix="Auth" value="3">
+      <tp:enumvalue suffix="Auth" value="4">
         <tp:docstring>Retry after providing credentials</tp:docstring>
       </tp:enumvalue>
-      <tp:enumvalue suffix="Wait" value="4">
+      <tp:enumvalue suffix="Wait" value="5">
         <tp:docstring>Retry after waiting (the error is temporary)</tp:docstring>
       </tp:enumvalue>
     </tp:enum>

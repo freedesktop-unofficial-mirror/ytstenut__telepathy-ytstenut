@@ -27,7 +27,8 @@ tp_ytstenut_error_get_type (void)
   if (g_once_init_enter (&etype))
     {
       static const GEnumValue values[] = {
-        { TP_YTSTENUT_ERROR_PLACEHOLDER, "TP_YTSTENUT_ERROR_PLACEHOLDER", "PlaceholdersNotReplacedByRealErrors" },
+        { TP_YTSTENUT_ERROR_FORBIDDEN, "TP_YTSTENUT_ERROR_FORBIDDEN", "forbidden" },
+        { TP_YTSTENUT_ERROR_FORBIDDEN, "TP_YTSTENUT_ERROR_FORBIDDEN", "item-not-found" },
         { 0 }
       };
 

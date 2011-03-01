@@ -1,14 +1,33 @@
 <?xml version="1.0" ?>
-<tp:errors xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0" namespace="com.example.Foo.Error">
-  <tp:copyright> Copyright © Subject Name Here </tp:copyright>
+<tp:errors xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0" namespace="com.meego.xpmn.ytstenut.Error">
+  <tp:copyright> Copyright © 2011 Collabora Limited </tp:copyright>
   <tp:license xmlns="http://www.w3.org/1999/xhtml">
-    <p>Subject home town here.</p>
+    <p>This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.</p>
+
+<p>This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</p>
   </tp:license>
 
-  <tp:error name="Placeholders Not Replaced By Real Errors">
+  <tp:error name="forbidden">
     <tp:docstring>
-      Describe me!
+      The recipient does not have sufficient privileges to carry out the command.
     </tp:docstring>
   </tp:error>
+
+  <tp:error name="item-not-found">
+    <tp:docstring>
+      The recipient does not have sufficient privileges to carry out the command.
+    </tp:docstring>
+  </tp:error>
+
 </tp:errors>
 <!-- vim:set sw=2 sts=2 et ft=xml: -->
