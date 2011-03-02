@@ -66,6 +66,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:docstring>
     </property>
 
+    <property name="TargetService" access="read"
+      tp:name-for-bindings="Target_Service" type="s"
+      tp:immutable='yes' tp:requestable='yes'>
+      <tp:docstring>
+        The name of the target Ytstenut service that this channel is targetted
+        at.
+      </tp:docstring>
+    </property>
+
+    <property name="InitiatorService" access="read"
+      tp:name-for-bindings="Initiator_Service" type="s"
+      tp:immutable='yes' tp:requestable='yes'>
+      <tp:docstring>
+        The name of the Ytstenut service which initiated this channel.
+      </tp:docstring>
+    </property>
+
     <signal name="Replied" tp:name-for-bindings="Replied">
       <arg name="Attributes" type="a{ss}" tp:type="Message_Attrs">
         <tp:docstring>
