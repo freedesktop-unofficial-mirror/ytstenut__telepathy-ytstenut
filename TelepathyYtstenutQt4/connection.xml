@@ -5,6 +5,6 @@
 <tp:title>All interfaces</tp:title>
 
 <xi:include href="../spec/Channel.xml"/>
-<xi:include href="../spec/AccountManager.xml"/>
+<xi:include href="../spec/Account_Manager.xml"/>
 
 </tp:spec>

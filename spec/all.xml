@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
 
   <tp:section name="Draft interfaces from the Telepathy spec">
     <xi:include href="Channel.xml"/>
-    <xi:include href="AccountManager.xml"/>
+    <xi:include href="Account_Manager.xml"/>
   </tp:section>
 
   <xi:include href="errors.xml"/>
