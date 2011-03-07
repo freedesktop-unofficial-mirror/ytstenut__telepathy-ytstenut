@@ -2,8 +2,9 @@
   xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0"
   xmlns:xi="http://www.w3.org/2001/XInclude">
 
-<tp:title>Connection interfaces</tp:title>
+<tp:title>All interfaces</tp:title>
 
 <xi:include href="../spec/Channel.xml"/>
+<xi:include href="../spec/Account_Manager.xml"/>
 
 </tp:spec>

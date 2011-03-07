@@ -12,6 +12,7 @@
 
   <tp:section name="Draft interfaces from the Telepathy spec">
     <xi:include href="../spec/Channel.xml"/>
+    <xi:include href="../spec/Account_Manager.xml"/>
   </tp:section>
 
   <xi:include href="../spec/errors.xml"/>

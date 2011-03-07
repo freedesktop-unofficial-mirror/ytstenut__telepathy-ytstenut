@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<node name="/Account_Manager" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
+  <tp:copyright> Copyright © 2011 Collabora Limited </tp:copyright>
+  <tp:license xmlns="http://www.w3.org/1999/xhtml">
+    <p>This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.</p>
+
+<p>This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</p>
+  </tp:license>
+  <interface name="com.meego.xpmn.ytstenut.AccountManager">
+
+    <property name="Account" access="read" tp:name-for-bindings="Account"
+      type="o" tp:immutable='yes'>
+      <tp:docstring>
+        Object path for the ytstenut account.
+      </tp:docstring>
+    </property>
+
+    <method name="Hold" tp:name-for-bindings="Hold">
+      <tp:docstring>
+        Tell the account manager that the caller of this method is using
+        the ytstenut account until the caller calls Release().
+      </tp:docstring>
+    </method>
+
+    <method name="Release" tp:name-for-bindings="Release">
+      <tp:docstring>
+        Tell the account manager that the caller is finished using the
+        ytstenut account. This should only follow a successful call to
+        Hold() by the same caller.
+      </tp:docstring>
+    </method>
+
+    <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+      <p>This account manager is used to discover the ytstenut account.
+         This account is created automatically and is always present.
+         Callers can use the Hold() and Release() methods to indicate their
+         usage of the account. If at least one caller has indicated their
+         usage of the account then the accounts presence will be set to
+         available.</p>
+    </tp:docstring>
+
+  </interface>
+</node>
