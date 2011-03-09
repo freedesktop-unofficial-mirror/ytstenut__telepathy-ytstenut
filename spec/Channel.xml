@@ -59,10 +59,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       <tp:docstring>
         The UTF-8 encoded XML body of the Ytstenut request message. The
           top level element must have the name 'message' and be of the namespace
-          'urn:ytstenut:message'. Any attributes in the RequestAttributes property
-          will override any attributes of the same names on the top level
-          element. If an empty string is used as the RequestBody then a default
-          body will be used instead.
+          'urn:ytstenut:message'. Any attributes in the
+          <tp:member-ref>RequestAttributes</tp:member-ref> property will
+          override any attributes of the same names on the top level element. If
+          an empty string is used as the
+          <tp:member-ref>RequestBody</tp:member-ref> then a default body will be
+          used instead.
       </tp:docstring>
     </property>
 
@@ -92,7 +94,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       <arg name="Body" type="s" tp:type="Message_Body">
         <tp:docstring>
           The UTF-8 encoded XML body of the Ytstenut result message, including
-          the attributes in the 
+          the attributes in the 'Attributes' argument.
         </tp:docstring>
       </arg>
       <tp:docstring>
@@ -134,8 +136,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
 
     <method name="Request" tp:name-for-bindings="Request">
       <tp:docstring>
-        Send the Ytstenut request (represented by the RequestType,
-        RequestAttributes and RequestBody) properties to the other
+        Send the Ytstenut request (represented by the
+        <tp:member-ref>RequestType</tp:member-ref>,
+        <tp:member-ref>RequestAttributes</tp:member-ref> and
+        <tp:member-ref>RequestBody</tp:member-ref>) properties to the other
         side of this channel.
       </tp:docstring>
     </method>
@@ -151,10 +155,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
         <tp:docstring>
           Optional UTF-8 encoded XML body of the Ytstenut reply message. The
           top level element must have the name 'message' and be of the namespace
-          'urn:ytstenut:message'. Any attributes in the Attributes argument
-          will override any attributes of the same names on the top level
-          element. If an empty string is used as the Body then a default
-          body will be created instead.
+          'urn:ytstenut:message'. Any attributes in the
+          <tp:member-ref>Attributes</tp:member-ref> argument will override any
+          attributes of the same names on the top level element. If an empty
+          string is used as the 'Body' then a default body will be created
+          instead.
         </tp:docstring>
       </arg>
       <tp:docstring>
@@ -228,7 +233,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       <p>When a channel of this type is created by calling
         <code>CreateChannel()</code>, the
         <tp:member-ref>RequestType</tp:member-ref>,
-        <tp:member-ref>RequestAttributes</tp:member-ref> (and optionally
+        <tp:member-ref>RequestAttributes</tp:member-ref>,
+        <tp:member-ref>TargetService</tp:member-ref>
+        <tp:member-ref>InitiatorService</tp:member-ref> (and optionally
         <tp:member-ref>RequestBody</tp:member-ref>) properties should be
         specified. The request is sent while the channel is created.</p>
     </tp:docstring>
