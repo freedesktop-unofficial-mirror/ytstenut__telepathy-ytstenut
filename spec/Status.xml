@@ -24,15 +24,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
         Handle_Type_Contact</tp:docstring>
     </tp:simple-type>
 
-    <tp:mapping name="ContactCapabilityMap"
-      tp:name-for-bindings="Contact_Capability_Map">
+    <tp:mapping name="Contact_Capability_Map">
       <tp:member type="u" name="Contact" tp:type="Contact_Handle">
         <tp:docstring>
           The contact for the device on which these capabilities are present.
         </tp:docstring>
       </tp:member>
-      <tp:member type="a{sa{ss}}" name="CapabilityStatusInfo"
-        tp:type="CapabilityServiceMap" tp:name-for-bindings="CapabilityInfo">
+      <tp:member type="a{sa{ss}}" name="Capability_Status_Info"
+        tp:type="Capability_Service_Map">
         <tp:docstring>
           The advertised status of the various services, with capabilities
           available for this contact.
@@ -44,15 +43,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:docstring>
     </tp:mapping>
 
-    <tp:mapping name="CapabilityServiceMap"
-      tp:name-for-bindings="Capability_Service_Map">
+    <tp:mapping name="Capability_Service_Map">
       <tp:member type="s" name="Capability">
         <tp:docstring>
           The capability for which the status is being advertised.
         </tp:docstring>
       </tp:member>
-      <tp:member type="a{ss}" name="ServiceStatusInfo"
-        tp:name-for-bindings="Service_Status_Info" tp:type="ServiceStatusMap">
+      <tp:member type="a{ss}" name="Service_Status_Info"
+        tp:type="Service_Status_Map">
         <tp:docstring>
           The advertized status of services that expose this capability.
         </tp:docstring>
@@ -62,16 +60,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:docstring>
     </tp:mapping>
 
-    <tp:mapping name="ServiceStatusMap"
-      tp:name-for-bindings="Service_Status_Map">
-      <tp:member type="s" name="ServiceName"
-        tp:name-for-bindings="Service_Name">
+    <tp:mapping name="Service_Status_Map">
+      <tp:member type="s" name="Service_Name">
         <tp:docstring>
           The name of the service which advertised this status.
         </tp:docstring>
       </tp:member>
-      <tp:member type="s" name="StatusBody"
-        tp:name-for-bindngs="Status_Body">
+      <tp:member type="s" name="Status_Body">
         <tp:docstring>
           The UTF-8 encoded XML body of the Ytstenut status.
         </tp:docstring>
@@ -88,8 +83,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
           The capability for which this status is being advertised.
         </tp:docstring>
       </arg>
-      <arg direction="in" name="ServiceName" type="s"
-        tp:name-for-bindings="Service_Name">
+      <arg direction="in" name="Service_Name" type="s">
         <tp:docstring>
           The name of the service advertising this capability.
         </tp:docstring>
@@ -107,7 +101,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     </method>
 
     <property name="DiscoveredStatuses" access="read" type="a{ua{sa{ss}}}"
-      tp:type="ContactCapabilityMap" tp:name-for-bindings="Discovered_Statuses">
+      tp:type="Contact_Capability_Map" tp:name-for-bindings="Discovered_Statuses">
       <tp:docstring>
         All the Ytstenut Statuses that we've discovered on the local network.
         These are advertised by the various services on the various devices.
@@ -125,7 +119,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
           The capability for which the status changed.
         </tp:docstring>
       </arg>
-      <arg name="ServiceName" type="s" tp:name-for-bindings="Service_Name">
+      <arg name="Service_Name" type="s">
         <tp:docstring>
           The name of the service whose status changed.
         </tp:docstring>
