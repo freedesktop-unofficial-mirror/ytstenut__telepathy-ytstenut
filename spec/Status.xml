@@ -18,14 +18,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
   </tp:license>
   <interface name="com.meego.xpmn.ytstenut.Status">
 
-    <tp:simple-type name="Contact_Handle" type="u"
-      array-name="Contact_Handle_List">
-      <tp:docstring>An unsigned 32-bit integer representing a handle of type
-        Handle_Type_Contact</tp:docstring>
-    </tp:simple-type>
-
     <tp:mapping name="Contact_Capability_Map">
-      <tp:member type="u" name="Contact" tp:type="Contact_Handle">
+      <tp:member type="s" name="Contact_Id">
         <tp:docstring>
           The contact for the device on which these capabilities are present.
         </tp:docstring>
@@ -100,7 +94,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:docstring>
     </method>
 
-    <property name="DiscoveredStatuses" access="read" type="a{ua{sa{ss}}}"
+    <property name="DiscoveredStatuses" access="read" type="a{sa{sa{ss}}}"
       tp:type="Contact_Capability_Map" tp:name-for-bindings="Discovered_Statuses">
       <tp:docstring>
         All the Ytstenut Statuses that we've discovered on the local network.
@@ -109,7 +103,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     </property>
 
     <signal name="StatusChanged" tp:name-for-bindings="Status_Changed">
-      <arg name="Contact" type="u" tp:type="Contact_Handle">
+      <arg name="Contact_Id" type="s">
         <tp:docstring>
           The contact for the device on which the status changed.
         </tp:docstring>
