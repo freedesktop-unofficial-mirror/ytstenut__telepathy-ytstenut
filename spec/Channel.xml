@@ -153,17 +153,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </arg>
       <arg direction="in" name="Body" tp:type="Message_Body" type="s">
         <tp:docstring>
-          Optional UTF-8 encoded XML body of the Ytstenut reply message. The
-          top level element must have the name 'message' and be of the namespace
-          'urn:ytstenut:message'. Any attributes in the
-          <tp:member-ref>Attributes</tp:member-ref> argument will override any
-          attributes of the same names on the top level element. If an empty
-          string is used as the 'Body' then a default body will be created
-          instead.
+          Optional UTF-8 encoded XML body of the Ytstenut reply
+          message. The top level element must have the name 'message'
+          and be of the namespace 'urn:ytstenut:message'. Any
+          attributes in the Attributes argument will override any
+          attributes of the same names on the top level element. If an
+          empty string is used as the 'Body' then a default body will
+          be created instead.
         </tp:docstring>
       </arg>
       <tp:docstring>
-        Send a &lt;iq&gt; result to the Ytstenut request.
+        Send an &lt;iq&gt; result to the Ytstenut request.
       </tp:docstring>
     </method>
 
