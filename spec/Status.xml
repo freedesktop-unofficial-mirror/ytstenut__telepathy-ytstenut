@@ -142,5 +142,60 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       which are advertised on the local network.</p>
     </tp:docstring>
 
+    <tp:mapping name="Localized_Name_Map">
+      <tp:member type="s" name="Language">
+        <tp:docstring>
+          The <a
+          href="http://en.wikipedia.org/wiki/IETF_language_tag">IETF
+          language tag</a> for the localization of the service name.
+        </tp:docstring>
+      </tp:member>
+      <tp:member type="s" name="Name">
+        <tp:docstring>
+          The localized name.
+        </tp:docstring>
+      </tp:member>
+      <tp:docstring>
+        A map of language tags and their respective localization of
+        the service name.
+      </tp:docstring>
+    </tp:mapping>
+
+    <tp:struct name="Service" array-name="Service_List">
+      <tp:member type="s" name="Type">
+        <tp:docstring>
+          The type of the service, either "application" or
+          "controller".
+        </tp:docstring>
+      </tp:member>
+      <tp:member type="s" name="Name">
+        <tp:docstring>
+          The service's unique identifier.
+        </tp:docstring>
+      </tp:member>
+      <tp:member type="a{ss}" name="Localized_Name_Map"
+        tp:type="Localized_Name_Map">
+        <tp:docstring>
+          A map of localized names of the service.
+        </tp:docstring>
+      </tp:member>
+      <tp:member type="as" name="Capabilities">
+        <tp:docstring>
+          A list of capabilities the service has.
+        </tp:docstring>
+      </tp:member>
+      <tp:docstring>
+        A structure containing information about a Ytstenut service.
+      </tp:docstring>
+    </tp:struct>
+
+    <property name="DiscoveredServices" access="read" type="a(ssa{ss}as)"
+              tp:type="Service[]" tp:name-for-bindings="Discovered_Services">
+      <tp:docstring>
+        All the Ytstenut services that we've discovered on the local
+        network.
+      </tp:docstring>
+    </property>
+
   </interface>
 </node>
