@@ -161,16 +161,27 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:docstring>
     </tp:mapping>
 
-    <tp:struct name="Service" array-name="Service_List">
+    <tp:mapping name="Service_Map">
+      <tp:member type="s" name="Name">
+        <tp:docstring>
+          The service's unique identifier.
+        </tp:docstring>
+      </tp:member>
+      <tp:member name="Service" type="(sa{ss}as)" tp:type="Service">
+        <tp:docstring>
+          The details of the service.
+        </tp:docstring>
+      </tp:member>
+      <tp:docstring>
+        A map of service name to its detail structure.
+      </tp:docstring>
+    </tp:mapping>
+
+    <tp:struct name="Service">
       <tp:member type="s" name="Type">
         <tp:docstring>
           The type of the service, either "application" or
           "controller".
-        </tp:docstring>
-      </tp:member>
-      <tp:member type="s" name="Name">
-        <tp:docstring>
-          The service's unique identifier.
         </tp:docstring>
       </tp:member>
       <tp:member type="a{ss}" name="Localized_Name_Map"
@@ -189,8 +200,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:docstring>
     </tp:struct>
 
-    <property name="DiscoveredServices" access="read" type="a(ssa{ss}as)"
-              tp:type="Service[]" tp:name-for-bindings="Discovered_Services">
+    <property name="DiscoveredServices" access="read" type="a{s(sa{ss}as)}"
+              tp:type="Service_Map" tp:name-for-bindings="Discovered_Services">
       <tp:docstring>
         All the Ytstenut services that we've discovered on the local
         network.
