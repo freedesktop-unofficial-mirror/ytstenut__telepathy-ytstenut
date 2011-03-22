@@ -236,11 +236,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
       <p>This channel represents Ytstenut commands being sent to or from a
       remote service.</p>
-      <p>To send a command to a remote service, request a channel of this type,
-      specifying <tp:member-ref>TargetHandleType</tp:member-ref> as Contact, the
-      <tp:member-ref>TargetID</tp:member-ref> of the target contact (which may
-      be the local user's own JID), plus the
-      <tp:member-ref>InitiatorService</tp:member-ref>,
+      <p>To send a command to a remote service, request a channel of
+      this type, specifying TargetHandleType as Contact, the TargetID
+      of the target contact (which may be the local user's own JID),
+      plus the <tp:member-ref>InitiatorService</tp:member-ref>,
       <tp:member-ref>TargetService</tp:member-ref>,
       <tp:member-ref>RequestType</tp:member-ref>,
       <tp:member-ref>RequestAttributes</tp:member-ref>,
