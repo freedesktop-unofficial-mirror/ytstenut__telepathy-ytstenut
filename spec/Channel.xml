@@ -48,8 +48,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     <property name="RequestAttributes" access="read" tp:type="Message_Attrs"
       tp:name-for-bindings="Request_Attributes" type="a{ss}"
       tp:immutable='yes' tp:requestable='yes'>
-      <tp:docstring>
-        The attributes present on the Ytstenut request message.
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>The attributes present on the Ytstenut request message.</p>
+        <p>The exact attributes specified depend on the type and intent of
+          the Ytstenut message being sent. Some examples are the
+          <tt>capability</tt>, <tt>activity</tt> or <tt>time</tt> attributes.
+          For more details see the Ytstenut specification.</p>
       </tp:docstring>
     </property>
 
@@ -230,14 +234,33 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
     </tp:enum>
 
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-      <p>When a channel of this type is created by calling
-        <code>CreateChannel()</code>, the
-        <tp:member-ref>RequestType</tp:member-ref>,
-        <tp:member-ref>RequestAttributes</tp:member-ref>,
-        <tp:member-ref>TargetService</tp:member-ref>
-        <tp:member-ref>InitiatorService</tp:member-ref> (and optionally
-        <tp:member-ref>RequestBody</tp:member-ref>) properties should be
-        specified. The request is sent while the channel is created.</p>
+      <p>This channel represents Ytstenut commands being sent to or from a
+      remote service.</p>
+      <p>To send a command to a remote service, request a channel of this type,
+      specifying <tp:member-ref>TargetHandleType</tp:member-ref> as Contact, the
+      <tp:member-ref>TargetID</tp:member-ref> of the target contact (which may
+      be the local user's own JID), plus the
+      <tp:member-ref>InitiatorService</tp:member-ref>,
+      <tp:member-ref>TargetService</tp:member-ref>,
+      <tp:member-ref>RequestType</tp:member-ref>,
+      <tp:member-ref>RequestAttributes</tp:member-ref>,
+      and (optionally) <tp:member-ref>RequestBody</tp:member-ref> properties.
+      Connect to the <tp:member-ref>Replied</tp:member-ref> and
+      <tp:member-ref>Failed</tp:member-ref> signals on the resulting channel,
+      and then call <tp:member-ref>Request</tp:member-ref>; one of the two
+      signals will be emitted when the target replies, after which point the
+      channel may be closed.</p>
+      <p>Services which handle incoming commands should have an entry in
+      HandlerChannelFilter as follows:</p>
+      <pre>
+      { ChannelType: ...,
+        TargetHandleType: Contact,
+        TargetService: com.example.myservice
+      }</pre>
+      <p>Upon being handed an incoming channel, the handler should process the
+      request and call one of <tp:member-ref>Reply</tp:member-ref> or
+      <tp:member-ref>Fail</tp:member-ref>, after which point it may close the
+      channel.</p>
     </tp:docstring>
 
   </interface>
