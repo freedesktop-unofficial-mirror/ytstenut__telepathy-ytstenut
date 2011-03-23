@@ -62,12 +62,12 @@ _gen/all.xml: all.xml $(wildcard $(top_srcdir)/spec/*.xml)
 _gen/svc.c _gen/svc.h: _gen/all.xml $(tools_dir)/glib-ginterface-gen.py \
 	Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-ginterface-gen.py \
-		--filename=_gen/svc --signal-marshal-prefix=_ytstenut \
+		--filename=_gen/svc --signal-marshal-prefix=_tp_yts \
 		--include='<telepathy-glib/dbus.h>' \
 		--include='"_gen/signals-marshal.h"' \
 		--allow-unstable \
 		--not-implemented-func='tp_dbus_g_method_return_not_implemented' \
-		$< Ytstenut_Svc_
+		$< Tp_Yts_Svc_
 
 _gen/signals-marshal.list: _gen/all.xml \
 	$(tools_dir)/glib-signals-marshal-gen.py \
@@ -75,24 +75,24 @@ _gen/signals-marshal.list: _gen/all.xml \
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-signals-marshal-gen.py $< > $@
 
 _gen/signals-marshal.h: _gen/signals-marshal.list Makefile.am
-	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=_ytstenut_marshal $< > $@
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=_tp_yts_marshal $< > $@
 
 _gen/signals-marshal.c: _gen/signals-marshal.list Makefile.am
 	$(AM_V_GEN){ echo '#include "_gen/signals-marshal.h"' && \
-	$(GLIB_GENMARSHAL) --body --prefix=_ytstenut_marshal $< ; } > $@
+	$(GLIB_GENMARSHAL) --body --prefix=_tp_yts_marshal $< ; } > $@
 
 _gen/enums.h: _gen/all.xml $(tools_dir)/c-constants-gen.py \
 	Makefile.am
-	$(AM_V_GEN)$(PYTHON) $(tools_dir)/c-constants-gen.py Ytstenut $< > $@
+	$(AM_V_GEN)$(PYTHON) $(tools_dir)/c-constants-gen.py Tp_Yts $< > $@
 
 _gen/interfaces.h _gen/interfaces-body.h: _gen/all.xml \
 	$(tools_dir)/glib-interfaces-gen.py \
 	Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-interfaces-gen.py \
-		Ytstenut _gen/interfaces-body.h _gen/interfaces.h $<
+		Tp_Yts _gen/interfaces-body.h _gen/interfaces.h $<
 
 _gen/gtypes.h _gen/gtypes-body.h: _gen/all.xml \
 	$(tools_dir)/glib-gtypes-generator.py Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-gtypes-generator.py \
-		$< _gen/gtypes Ytstenut
+		$< _gen/gtypes Tp_Yts
 

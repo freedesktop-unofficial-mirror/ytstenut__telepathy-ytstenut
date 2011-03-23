@@ -73,15 +73,15 @@ _gen/all.xml: $(top_srcdir)/spec/all.xml $(wildcard $(top_srcdir)/spec/*.xml)
 _gen/constants.h: _gen/all.xml \
 		$(tools_dir)/qt4-constants-gen.py
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/qt4-constants-gen.py \
-		--namespace='TpYtstenut' \
-		--str-constant-prefix='TP_YTSTENUT_' \
+		--namespace='TpYts' \
+		--str-constant-prefix='TP_YTS_' \
 		--specxml=$< \
 		> $@.tmp && mv $@.tmp $@
 
 _gen/types.h _gen/types-body.hpp: _gen/all.xml \
 		$(tools_dir)/qt4-types-gen.py
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/qt4-types-gen.py \
-		--namespace='TpYtstenut' \
+		--namespace='TpYts' \
 		--declfile='_gen/types.h' \
 		--implfile='_gen/types-body.hpp' \
 		--realinclude='types.h' \
@@ -98,8 +98,8 @@ _gen/connection.xml: connection.xml $(wildcard $(top_srcdir)/spec/*.xml)
 _gen/cli-connection-body.hpp _gen/cli-connection.h: _gen/connection.xml \
 	_gen/all.xml $(tools_dir)/qt4-client-gen.py
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/qt4-client-gen.py \
-		--namespace='TpYtstenut::Client' \
-		--typesnamespace='TpYtstenut' \
+		--namespace='TpYts::Client' \
+		--typesnamespace='TpYts' \
 		--headerfile=_gen/cli-connection.h \
 		--implfile=_gen/cli-connection-body.hpp \
 		--realinclude=$(top_srcdir)/TelepathyYtstenutQt4/cli-connection.h \
