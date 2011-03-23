@@ -53,64 +53,33 @@ diddle_get_account (TpYtsAccountManager *manager)
       on_get_account);
 }
 
-static void
-on_hold (GObject *object,
-    GAsyncResult *res,
-    gpointer user_data)
+static gboolean
+main_loop_quit_later (gpointer user_data)
 {
-  GError *error = NULL;
-  gboolean ret;
-
-  g_assert (TP_IS_YTS_ACCOUNT_MANAGER (object));
-  g_assert (G_IS_ASYNC_RESULT (res));
-  g_assert (user_data == on_hold);
-
-  ret = tp_yts_account_manager_hold_finish (TP_YTS_ACCOUNT_MANAGER (object),
-      res, &error);
-  g_assert_no_error (error);
-  g_assert (ret);
-
   g_main_loop_quit (loop);
+  return FALSE; /* Remove this source */
 }
 
 static void
 diddle_hold (TpYtsAccountManager *manager)
 {
-  tp_yts_account_manager_hold_async (manager, NULL, on_hold, on_hold);
-}
-
-static void
-on_release (GObject *object,
-    GAsyncResult *res,
-    gpointer user_data)
-{
-  GError *error = NULL;
-  gboolean ret;
-
-  g_assert (TP_IS_YTS_ACCOUNT_MANAGER (object));
-  g_assert (G_IS_ASYNC_RESULT (res));
-  g_assert (user_data == on_release);
-
-  ret = tp_yts_account_manager_release_finish (TP_YTS_ACCOUNT_MANAGER (object),
-      res, &error);
-  g_assert_no_error (error);
-  g_assert (ret);
-
-  g_main_loop_quit (loop);
+  tp_yts_account_manager_hold (manager);
+  g_timeout_add (100, main_loop_quit_later, NULL);
 }
 
 static void
 diddle_release (TpYtsAccountManager *manager)
 {
-  tp_yts_account_manager_release_async (manager, NULL, on_release, on_release);
+  tp_yts_account_manager_release (manager);
+  g_timeout_add (100, main_loop_quit_later, NULL);
 }
 
 struct {
   const gchar *name;
   void (*diddler) (TpYtsAccountManager *manager);
 } the_diddlers[] = {
-    { "get-account", diddle_get_account },
     { "hold", diddle_hold },
+    { "get-account", diddle_get_account },
     { "release", diddle_release },
 };
 

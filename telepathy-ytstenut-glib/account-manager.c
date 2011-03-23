@@ -256,49 +256,20 @@ on_account_manager_hold_returned (TpYtsAccountManager *proxy,
     gpointer user_data,
     GObject *weak_object)
 {
-  GSimpleAsyncResult *res = user_data;
-
   if (error != NULL)
     {
-      DEBUG ("Hold() call failed: %s", error->message);
-      g_simple_async_result_set_from_error (res, error);
+      DEBUG ("%s.Hold() call failed: %s", TP_YTS_IFACE_ACCOUNT_MANAGER,
+          error->message);
     }
-
-  g_simple_async_result_complete (res);
-  g_object_unref (res);
 }
 
 void
-tp_yts_account_manager_hold_async (TpYtsAccountManager *manager,
-    GCancellable *cancellable,
-    GAsyncReadyCallback callback,
-    gpointer user_data)
+tp_yts_account_manager_hold (TpYtsAccountManager *manager)
 {
-  GSimpleAsyncResult *res;
-
   g_return_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (manager));
 
-  res = g_simple_async_result_new (G_OBJECT (manager), callback, user_data,
-      tp_yts_account_manager_hold_async);
-
   tp_yts_account_manager_call_hold (manager, -1,
-      on_account_manager_hold_returned, res, NULL, G_OBJECT (manager));
-}
-
-gboolean
-tp_yts_account_manager_hold_finish (TpYtsAccountManager *manager,
-    GAsyncResult *result,
-    GError **error)
-{
-  g_return_val_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (manager), FALSE);
-  g_return_val_if_fail (g_simple_async_result_is_valid (result,
-          G_OBJECT (manager), tp_yts_account_manager_hold_async), FALSE);
-
-  if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-      error))
-    return FALSE;
-
-  return TRUE;
+      on_account_manager_hold_returned, NULL, NULL, G_OBJECT (manager));
 }
 
 static void
@@ -307,47 +278,18 @@ on_account_manager_release_returned (TpYtsAccountManager *proxy,
     gpointer user_data,
     GObject *weak_object)
 {
-  GSimpleAsyncResult *res = user_data;
-
   if (error != NULL)
     {
-      DEBUG ("Release() call failed: %s", error->message);
-      g_simple_async_result_set_from_error (res, error);
+      DEBUG ("%s.Release() call failed: %s", TP_YTS_IFACE_ACCOUNT_MANAGER,
+          error->message);
     }
-
-  g_simple_async_result_complete (res);
-  g_object_unref (res);
 }
 
 void
-tp_yts_account_manager_release_async (TpYtsAccountManager *manager,
-    GCancellable *cancellable,
-    GAsyncReadyCallback callback,
-    gpointer user_data)
+tp_yts_account_manager_release (TpYtsAccountManager *manager)
 {
-  GSimpleAsyncResult *res;
-
   g_return_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (manager));
 
-  res = g_simple_async_result_new (G_OBJECT (manager), callback, user_data,
-      tp_yts_account_manager_release_async);
-
   tp_yts_account_manager_call_release (manager, -1,
-      on_account_manager_release_returned, res, NULL, G_OBJECT (manager));
-}
-
-gboolean
-tp_yts_account_manager_release_finish (TpYtsAccountManager *manager,
-    GAsyncResult *result,
-    GError **error)
-{
-  g_return_val_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (manager), FALSE);
-  g_return_val_if_fail (g_simple_async_result_is_valid (result,
-          G_OBJECT (manager), tp_yts_account_manager_release_async), FALSE);
-
-  if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-      error))
-    return FALSE;
-
-  return TRUE;
+      on_account_manager_release_returned, NULL, NULL, G_OBJECT (manager));
 }

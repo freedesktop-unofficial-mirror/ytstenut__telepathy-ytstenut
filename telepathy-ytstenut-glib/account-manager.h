@@ -80,19 +80,9 @@ void tp_yts_account_manager_get_account_async (TpYtsAccountManager *manager,
 TpAccount *tp_yts_account_manager_get_account_finish (
     TpYtsAccountManager *manager, GAsyncResult *result, GError **error);
 
-void tp_yts_account_manager_hold_async (TpYtsAccountManager *manager,
-    GCancellable *cancellable, GAsyncReadyCallback callback,
-    gpointer user_data);
+void tp_yts_account_manager_hold (TpYtsAccountManager *manager);
 
-gboolean tp_yts_account_manager_hold_finish (TpYtsAccountManager *manager,
-    GAsyncResult *result, GError **error);
-
-void tp_yts_account_manager_release_async (TpYtsAccountManager *manager,
-    GCancellable *cancellable, GAsyncReadyCallback callback,
-    gpointer user_data);
-
-gboolean tp_yts_account_manager_release_finish (TpYtsAccountManager *manager,
-    GAsyncResult *result, GError **error);
+void tp_yts_account_manager_release (TpYtsAccountManager *manager);
 
 G_END_DECLS
 
