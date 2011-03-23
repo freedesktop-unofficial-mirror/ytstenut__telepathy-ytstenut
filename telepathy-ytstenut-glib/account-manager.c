@@ -71,6 +71,8 @@ tp_yts_account_manager_init (TpYtsAccountManager *self)
 static void
 tp_yts_account_manager_class_init (TpYtsAccountManagerClass *klass)
 {
+  TpProxyClass *proxy_class = (TpProxyClass *) klass;
+  proxy_class->interface = TP_YTS_IFACE_QUARK_ACCOUNT_MANAGER;
   tp_yts_account_manager_init_known_interfaces ();
 }
 
