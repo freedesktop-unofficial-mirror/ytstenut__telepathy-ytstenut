@@ -40,3 +40,5 @@ tags
 telepathy-ytstenut-glib/telepathy-ytstenut-glib-uninstalled.pc
 telepathy-ytstenut-glib/telepathy-ytstenut-glib.pc
 tp-glib-tools/telepathy-glib-env
+
+/telepathy-ytstenut-glib/tests/diddle-account-manager

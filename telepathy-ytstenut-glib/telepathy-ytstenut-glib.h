@@ -1,6 +1,8 @@
 #ifndef TP_YTSTENUT_H
 #define TP_YTSTENUT_H
 
+#include <glib.h>
+
 #include <telepathy-glib/proxy-subclass.h>
 
 #include "telepathy-ytstenut-glib/_gen/enums.h"

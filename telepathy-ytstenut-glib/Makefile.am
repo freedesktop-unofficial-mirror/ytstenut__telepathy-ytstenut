@@ -1,3 +1,5 @@
+SUBDIRS = . tests
+
 pkgconfigdir = ${libdir}/pkgconfig
 pkgconfig_DATA = telepathy-ytstenut-glib.pc
 
@@ -37,6 +39,7 @@ BUILT_SOURCES = \
     $(nodist_libtelepathy_ytstenut_glib_la_SOURCES)
 
 tpytstenutglibinclude_HEADERS = \
+    account-manager.h \
     errors.h \
     telepathy-ytstenut-glib.h
 
