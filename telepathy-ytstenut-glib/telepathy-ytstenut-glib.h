@@ -1,22 +1,15 @@
-#ifndef TP_YTSTENUT_H
-#define TP_YTSTENUT_H
+#ifndef TP_YTSTENUT_GLIB_H
+#define TP_YTSTENUT_GLIB_H
 
 #include <glib.h>
 
-#include <telepathy-glib/proxy-subclass.h>
-
-#include "telepathy-ytstenut-glib/_gen/enums.h"
-#include "telepathy-ytstenut-glib/_gen/svc.h"
-#include "telepathy-ytstenut-glib/errors.h"
+#include "telepathy-ytstenut-glib/generated.h"
 
 #include "telepathy-ytstenut-glib/account-manager.h"
+#include "telepathy-ytstenut-glib/channel-factory.h"
+#include "telepathy-ytstenut-glib/channel.h"
+#include "telepathy-ytstenut-glib/client.h"
 
-G_BEGIN_DECLS
 
-#include "telepathy-ytstenut-glib/_gen/gtypes.h"
-#include "telepathy-ytstenut-glib/_gen/interfaces.h"
-
-G_END_DECLS
-
-#endif /* TP_YTSTENUT_H */
+#endif /* TP_YTSTENUT_GLIB_H */
 
