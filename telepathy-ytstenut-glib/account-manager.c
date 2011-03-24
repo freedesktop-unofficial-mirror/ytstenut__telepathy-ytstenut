@@ -187,7 +187,6 @@ on_account_manager_get_account_returned (TpProxy *proxy,
     }
 
   g_simple_async_result_complete (res);
-  g_object_unref (res);
 }
 
 void
@@ -205,7 +204,8 @@ tp_yts_account_manager_get_account_async (TpYtsAccountManager *self,
 
   tp_cli_dbus_properties_call_get (TP_PROXY (self), -1,
       TP_YTS_IFACE_ACCOUNT_MANAGER, "Account",
-      on_account_manager_get_account_returned, res, NULL, G_OBJECT (self));
+      on_account_manager_get_account_returned, res, g_object_unref,
+      G_OBJECT (self));
 }
 
 TpAccount *
