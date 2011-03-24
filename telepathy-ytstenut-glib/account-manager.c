@@ -191,36 +191,36 @@ on_account_manager_get_account_returned (TpProxy *proxy,
 }
 
 void
-tp_yts_account_manager_get_account_async (TpYtsAccountManager *manager,
+tp_yts_account_manager_get_account_async (TpYtsAccountManager *self,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
   GSimpleAsyncResult *res;
 
-  g_return_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (manager));
+  g_return_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (self));
 
-  res = g_simple_async_result_new (G_OBJECT (manager), callback, user_data,
+  res = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
       tp_yts_account_manager_get_account_async);
 
-  tp_cli_dbus_properties_call_get (TP_PROXY (manager), -1,
+  tp_cli_dbus_properties_call_get (TP_PROXY (self), -1,
       TP_YTS_IFACE_ACCOUNT_MANAGER, "Account",
-      on_account_manager_get_account_returned, res, NULL, G_OBJECT (manager));
+      on_account_manager_get_account_returned, res, NULL, G_OBJECT (self));
 }
 
 TpAccount *
-tp_yts_account_manager_get_account_finish (TpYtsAccountManager *manager,
+tp_yts_account_manager_get_account_finish (TpYtsAccountManager *self,
     GAsyncResult *result,
     GError **error)
 {
   GSimpleAsyncResult *res;
 
-  g_return_val_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (manager), NULL);
+  g_return_val_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (self), NULL);
   g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), NULL);
 
   res = G_SIMPLE_ASYNC_RESULT (result);
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-          G_OBJECT (manager), tp_yts_account_manager_get_account_async), NULL);
+          G_OBJECT (self), tp_yts_account_manager_get_account_async), NULL);
 
   if (g_simple_async_result_propagate_error (res, error))
     return NULL;
@@ -229,7 +229,7 @@ tp_yts_account_manager_get_account_finish (TpYtsAccountManager *manager,
 }
 
 static void
-on_account_manager_hold_returned (TpYtsAccountManager *proxy,
+on_account_manager_hold_returned (TpYtsAccountManager *self,
     const GError *error,
     gpointer user_data,
     GObject *weak_object)
@@ -242,16 +242,16 @@ on_account_manager_hold_returned (TpYtsAccountManager *proxy,
 }
 
 void
-tp_yts_account_manager_hold (TpYtsAccountManager *manager)
+tp_yts_account_manager_hold (TpYtsAccountManager *self)
 {
-  g_return_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (manager));
+  g_return_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (self));
 
-  tp_yts_account_manager_call_hold (manager, -1,
-      on_account_manager_hold_returned, NULL, NULL, G_OBJECT (manager));
+  tp_yts_account_manager_call_hold (self, -1,
+      on_account_manager_hold_returned, NULL, NULL, G_OBJECT (self));
 }
 
 static void
-on_account_manager_release_returned (TpYtsAccountManager *proxy,
+on_account_manager_release_returned (TpYtsAccountManager *self,
     const GError *error,
     gpointer user_data,
     GObject *weak_object)
@@ -264,10 +264,10 @@ on_account_manager_release_returned (TpYtsAccountManager *proxy,
 }
 
 void
-tp_yts_account_manager_release (TpYtsAccountManager *manager)
+tp_yts_account_manager_release (TpYtsAccountManager *self)
 {
-  g_return_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (manager));
+  g_return_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (self));
 
-  tp_yts_account_manager_call_release (manager, -1,
-      on_account_manager_release_returned, NULL, NULL, G_OBJECT (manager));
+  tp_yts_account_manager_call_release (self, -1,
+      on_account_manager_release_returned, NULL, NULL, G_OBJECT (self));
 }

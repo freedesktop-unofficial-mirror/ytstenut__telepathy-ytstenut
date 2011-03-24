@@ -71,16 +71,16 @@ TpYtsAccountManager *tp_yts_account_manager_new (TpDBusDaemon *bus_daemon)
 TpYtsAccountManager *tp_yts_account_manager_dup (void)
     G_GNUC_WARN_UNUSED_RESULT;
 
-void tp_yts_account_manager_get_account_async (TpYtsAccountManager *manager,
+void tp_yts_account_manager_get_account_async (TpYtsAccountManager *self,
     GCancellable *cancellable, GAsyncReadyCallback callback,
     gpointer user_data);
 
-TpAccount *tp_yts_account_manager_get_account_finish (
-    TpYtsAccountManager *manager, GAsyncResult *result, GError **error);
+TpAccount *tp_yts_account_manager_get_account_finish (TpYtsAccountManager *self,
+    GAsyncResult *result, GError **error);
 
-void tp_yts_account_manager_hold (TpYtsAccountManager *manager);
+void tp_yts_account_manager_hold (TpYtsAccountManager *self);
 
-void tp_yts_account_manager_release (TpYtsAccountManager *manager);
+void tp_yts_account_manager_release (TpYtsAccountManager *self);
 
 G_END_DECLS
 
