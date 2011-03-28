@@ -147,7 +147,11 @@ TP_YTSTENUT_QT4_CFLAGS='-I${top_builddir}/TelepathyYtstenutQt4 -I${top_srcdir}'
 AC_SUBST(TP_YTSTENUT_QT4_CFLAGS)
 
 dnl Check for Glib
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >= 2.16])
+PKG_CHECK_MODULES(GLIB, [
+	glib-2.0 >= 2.16,
+	gobject-2.0 >= 2.16,
+	gthread-2.0 >= 2.16,
+	gio-2.0 >= 2.16])
 
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
@@ -198,4 +202,5 @@ AC_OUTPUT([
     telepathy-ytstenut-glib/Makefile
     telepathy-ytstenut-glib/telepathy-ytstenut-glib.pc
     telepathy-ytstenut-glib/telepathy-ytstenut-glib-uninstalled.pc
+    telepathy-ytstenut-glib/tests/Makefile
 ])
