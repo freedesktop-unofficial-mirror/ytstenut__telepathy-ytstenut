@@ -200,9 +200,9 @@ AM_CONDITIONAL(SPEC_DOCUMENTATION, test x$spec_documentation = xyes)
 
 AC_OUTPUT([
     Makefile
-    doc/Makefile
-    doc/reference/Makefile
-    doc/reference/version.xml
+    docs/Makefile
+    docs/reference/Makefile
+    docs/reference/version.xml
     tp-qt4-tools/Makefile
     tp-glib-tools/Makefile
     TelepathyYtstenutQt4/Makefile

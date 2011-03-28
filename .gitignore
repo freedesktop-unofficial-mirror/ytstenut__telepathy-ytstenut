@@ -26,7 +26,6 @@ config.sub
 configure
 cscope.out
 depcomp
-doc/spec/
 gtk-doc.make
 install-sh
 libtool
@@ -46,18 +45,19 @@ tp-glib-tools/telepathy-glib-env
 
 /telepathy-ytstenut-glib/tests/diddle-account-manager
 
-/doc/reference/xml
-/doc/reference/html
-/doc/reference/tmpl
-/doc/reference/telepathy-ytstenut-glib.types
-/doc/reference/telepathy-ytstenut-glib.signals
-/doc/reference/telepathy-ytstenut-glib.prerequisites
-/doc/reference/telepathy-ytstenut-glib.interfaces
-/doc/reference/telepathy-ytstenut-glib.hierarchy
-/doc/reference/telepathy-ytstenut-glib.args
-/doc/reference/telepathy-ytstenut-glib-unused.txt
-/doc/reference/telepathy-ytstenut-glib-undocumented.txt
-/doc/reference/telepathy-ytstenut-glib-undeclared.txt
-/doc/reference/telepathy-ytstenut-glib-decl.txt
-/doc/reference/telepathy-ytstenut-glib-decl-list.txt
-/doc/reference/version.xml
+/docs/reference/xml
+/docs/reference/html
+/docs/reference/tmpl
+/docs/reference/telepathy-ytstenut-glib.types
+/docs/reference/telepathy-ytstenut-glib.signals
+/docs/reference/telepathy-ytstenut-glib.prerequisites
+/docs/reference/telepathy-ytstenut-glib.interfaces
+/docs/reference/telepathy-ytstenut-glib.hierarchy
+/docs/reference/telepathy-ytstenut-glib.args
+/docs/reference/telepathy-ytstenut-glib-unused.txt
+/docs/reference/telepathy-ytstenut-glib-undocumented.txt
+/docs/reference/telepathy-ytstenut-glib-undeclared.txt
+/docs/reference/telepathy-ytstenut-glib-decl.txt
+/docs/reference/telepathy-ytstenut-glib-decl-list.txt
+/docs/reference/version.xml
+/docs/spec/

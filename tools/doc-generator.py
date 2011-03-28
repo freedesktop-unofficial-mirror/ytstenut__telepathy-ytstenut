@@ -45,7 +45,7 @@ if '--allow-externals' in sys.argv:
 
 program, spec_file, output_path, project, namespace = sys.argv
 
-template_path = os.path.join(os.path.dirname(program), '../doc/templates')
+template_path = os.path.join(os.path.dirname(program), '../docs/templates')
 
 # make the output path
 try:
