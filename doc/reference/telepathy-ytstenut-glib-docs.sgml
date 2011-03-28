@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+  <!ENTITY version SYSTEM "version.xml">
+]>
+<book id="index">
+  <bookinfo>
+    <title>Telepathy Ytstenut Glib Reference Manual</title>
+    <releaseinfo>
+      for telepathy-ytstenut-glib &version;.
+    </releaseinfo>
+  </bookinfo>
+
+  <chapter>
+    <title>Using Ytstenut Services</title>
+    <xi:include href="xml/account-manager.xml"/>
+  </chapter>
+
+  <chapter>
+    <title>Implementing Ytstenut Services</title>
+    <xi:include href="xml/svc-account-manager.xml"/>
+    <xi:include href="tp-svc.xml"/>
+  </chapter>
+
+  <chapter>
+    <title>Specification</title>
+    <xi:include href="xml/interfaces.xml"/>
+  </chapter>
+
+<!--
+  <chapter>
+    <title>TODO: The following will be cleaned up as development proceeds</title>
+    <xi:include href="xml/cli-all.xml"/>
+    <xi:include href="xml/errors.xml"/>
+    <xi:include href="xml/svc.xml"/>
+    <xi:include href="xml/enums.xml"/>
+    <xi:include href="xml/gtypes-body.xml"/>
+    <xi:include href="xml/cli-status.xml"/>
+    <xi:include href="xml/interfaces-body.xml"/>
+    <xi:include href="xml/gtypes.xml"/>
+    <xi:include href="xml/cli-channel.xml"/>
+  </chapter>
+-->
+
+  <chapter id="object-tree">
+    <title>Object Hierarchy</title>
+     <xi:include href="xml/tree_index.sgml"/>
+  </chapter>
+  <index id="api-index-full">
+    <title>API Index</title>
+    <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
+  </index>
+
+  <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+</book>

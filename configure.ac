@@ -122,6 +122,12 @@ if test x$enable_debug = xyes; then
   AC_DEFINE(ENABLE_DEBUG, [], [Enable debug code])
 fi
 
+GTK_DOC_CHECK([1.15])
+
+dnl docs/Makefile.am needs to know whether it's an out of tree build
+dnl (srcdir != builddir)
+AM_CONDITIONAL([OUT_OF_TREE_BUILD], [test "z$ac_srcdir" != z.])
+
 dnl Check for QtCore
 PKG_CHECK_MODULES(QTCORE, [QtCore >= 4.5])
 AC_SUBST(QTCORE_CFLAGS)
@@ -194,6 +200,9 @@ AM_CONDITIONAL(SPEC_DOCUMENTATION, test x$spec_documentation = xyes)
 
 AC_OUTPUT([
     Makefile
+    doc/Makefile
+    doc/reference/Makefile
+    doc/reference/version.xml
     tp-qt4-tools/Makefile
     tp-glib-tools/Makefile
     TelepathyYtstenutQt4/Makefile

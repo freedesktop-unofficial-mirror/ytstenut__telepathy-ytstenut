@@ -42,7 +42,18 @@
  * @short_description: proxy object for the Ytstenut account manager
  *
  * The #TpYtsAccountManager object is used to communicate with the Ytstenut
- * AccountManager service.
+ * AccountManager service. It is a proxy object for the DBus object running
+ * in a telepathy service.
+ *
+ * There is one predefined Ytstenut account, which is used to send and receive
+ * Ytstenut messages. You can access the account using the
+ * tp_yts_account_manager_get_account_async() function.
+ *
+ * The Ytstenut account will be kept online as long as one client has signified
+ * interest in it. The tp_yts_account_manager_hold() function can be used to
+ * signify that this client is interested in the Ytstenut account. Conversely,
+ * calling tp_yts_account_manager_release() signifies that this client is no
+ * longer interested in the Ytstenut account.
  */
 
 /**
@@ -56,6 +67,12 @@
  * TpYtsAccountManagerClass:
  *
  * The class of a #TpYtsAccountManager.
+ */
+
+/**
+ * TP_YTS_ACCOUNT_MANAGER_OBJECT_PATH:
+ *
+ * The DBus object path to the Ytstenut account.
  */
 
 #define MC5_BUS_NAME "org.freedesktop.Telepathy.MissionControl5"
@@ -189,6 +206,15 @@ on_account_manager_get_account_returned (TpProxy *proxy,
   g_simple_async_result_complete (res);
 }
 
+/**
+ * tp_yts_account_manager_get_account_async:
+ * @self: The proxy object.
+ * @cancellable: Currently ignored.
+ * @callback: A callback which should be called when the result is ready.
+ * @user_data: Data to pass to the callback.
+ *
+ * Start an asynchronous operation to get the Ytstenut account.
+ */
 void
 tp_yts_account_manager_get_account_async (TpYtsAccountManager *self,
     GCancellable *cancellable,
@@ -207,6 +233,18 @@ tp_yts_account_manager_get_account_async (TpYtsAccountManager *self,
       on_account_manager_get_account_returned, res, g_object_unref,
       G_OBJECT (self));
 }
+
+/**
+ * tp_yts_account_manager_get_account_finish:
+ * @self: The proxy object.
+ * @result: The result object passed to the callback.
+ * @error: An error will be placed here.
+ *
+ * Complete an asynchronous operation to get the Ytstenut account.
+ *
+ * Return: A newly allocated #TpAccount proxy, which you can use to access
+ * the Ytstenut account. If the operation failed %NULL will be returned.
+ */
 
 TpAccount *
 tp_yts_account_manager_get_account_finish (TpYtsAccountManager *self,
@@ -241,6 +279,17 @@ on_account_manager_hold_returned (TpYtsAccountManager *self,
     }
 }
 
+/**
+ * tp_yts_account_manager_hold:
+ * @self: The proxy object.
+ *
+ * Indicate that this client is interested in the Ytstenut account. As long as
+ * one or more clients are interested, an effort will be made to keep the
+ * account logged in and have an available presence.
+ *
+ * This method completes asynchronously, and the results may not be immediately
+ * apparent.
+ */
 void
 tp_yts_account_manager_hold (TpYtsAccountManager *self)
 {
@@ -263,6 +312,17 @@ on_account_manager_release_returned (TpYtsAccountManager *self,
     }
 }
 
+/**
+ * tp_yts_account_manager_release:
+ * @self: The proxy object.
+ *
+ * Indicate that this client is no longer interested in the Ytstenut account.
+ * Once no more clients are interested, the Ytstenut account will be set to
+ * offline presence.
+ *
+ * This method completes asynchronously, and the results may not be immediately
+ * apparent.
+ */
 void
 tp_yts_account_manager_release (TpYtsAccountManager *self)
 {

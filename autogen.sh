@@ -12,6 +12,7 @@ elif automake-1.11 --version >/dev/null 2>/dev/null && \
     export ACLOCAL
 fi
 
+gtkdocize
 autoreconf -i -f
 
 run_configure=true

@@ -4,6 +4,7 @@
 *.pyc
 *~
 .*.swp
+*.stamp
 .deps
 .libs
 Makefile
@@ -26,9 +27,11 @@ configure
 cscope.out
 depcomp
 doc/spec/
+gtk-doc.make
 install-sh
 libtool
 ltmain.sh
+m4/gtk-doc.m4
 m4/libtool.m4
 m4/ltoptions.m4
 m4/ltsugar.m4
@@ -42,3 +45,19 @@ telepathy-ytstenut-glib/telepathy-ytstenut-glib.pc
 tp-glib-tools/telepathy-glib-env
 
 /telepathy-ytstenut-glib/tests/diddle-account-manager
+
+/doc/reference/xml
+/doc/reference/html
+/doc/reference/tmpl
+/doc/reference/telepathy-ytstenut-glib.types
+/doc/reference/telepathy-ytstenut-glib.signals
+/doc/reference/telepathy-ytstenut-glib.prerequisites
+/doc/reference/telepathy-ytstenut-glib.interfaces
+/doc/reference/telepathy-ytstenut-glib.hierarchy
+/doc/reference/telepathy-ytstenut-glib.args
+/doc/reference/telepathy-ytstenut-glib-unused.txt
+/doc/reference/telepathy-ytstenut-glib-undocumented.txt
+/doc/reference/telepathy-ytstenut-glib-undeclared.txt
+/doc/reference/telepathy-ytstenut-glib-decl.txt
+/doc/reference/telepathy-ytstenut-glib-decl-list.txt
+/doc/reference/version.xml
