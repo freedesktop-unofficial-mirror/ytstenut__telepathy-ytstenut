@@ -1,4 +1,4 @@
-SUBDIRS = . tests
+SUBDIRS = extensions . tests
 
 pkgconfigdir = ${libdir}/pkgconfig
 pkgconfig_DATA = telepathy-ytstenut-glib.pc
@@ -38,6 +38,9 @@ nodist_libtelepathy_ytstenut_glib_la_SOURCES = \
 libtelepathy_ytstenut_glib_la_LDFLAGS = \
     -version-info "$(LT_CURRENT)":"$(LT_REVISION)":"$(LT_AGE)"
 
+libtelepathy_ytstenut_glib_la_LIBADD = \
+	$(builddir)/extensions/libfuture-extensions.la
+
 BUILT_SOURCES = \
     _gen/all.xml \
     $(nodist_libtelepathy_ytstenut_glib_la_SOURCES)
@@ -62,9 +65,18 @@ EXTRA_DIST = \
 CLEANFILES = \
     $(BUILT_SOURCES)
 
-AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @TP_GLIB_CFLAGS@ \
+AM_CFLAGS = \
+	$(ERROR_CFLAGS) \
+	@DBUS_CFLAGS@ \
+	@GLIB_CFLAGS@ \
+	@TP_GLIB_CFLAGS@ \
 	-I$(top_srcdir)
-AM_LDFLAGS = @DBUS_LIBS@ @GLIB_LIBS@ @TP_GLIB_LIBS@
+
+AM_LDFLAGS = \
+	@DBUS_LIBS@ \
+	@GLIB_LIBS@ \
+	@TP_GLIB_LIBS@
+
 
 # Generated stuff
 
@@ -115,8 +127,7 @@ _gen/signals-marshal.c: _gen/signals-marshal.list Makefile.am
 	$(AM_V_GEN){ echo '#include "_gen/signals-marshal.h"' && \
 	$(GLIB_GENMARSHAL) --body --prefix=_tp_yts_marshal $< ; } > $@
 
-_gen/enums.h: _gen/all.xml $(tools_dir)/c-constants-gen.py \
-	Makefile.am
+_gen/enums.h: _gen/all.xml $(tools_dir)/c-constants-gen.py Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/c-constants-gen.py Tp_Yts $< > $@
 
 _gen/interfaces.h _gen/interfaces-body.h: _gen/all.xml \

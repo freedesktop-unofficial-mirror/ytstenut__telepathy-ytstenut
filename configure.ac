@@ -211,5 +211,6 @@ AC_OUTPUT([
     telepathy-ytstenut-glib/Makefile
     telepathy-ytstenut-glib/telepathy-ytstenut-glib.pc
     telepathy-ytstenut-glib/telepathy-ytstenut-glib-uninstalled.pc
+    telepathy-ytstenut-glib/extensions/Makefile
     telepathy-ytstenut-glib/tests/Makefile
 ])
