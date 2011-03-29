@@ -46,8 +46,22 @@
  * @title: TpYtsStatus
  * @short_description: proxy object for Ytstenut service status
  *
- * The #TpYtsStatus object is used to communicate with the Ytstenut
- * Status service.
+ * The #TpYtsStatus object is a proxy which is used to communicate with the
+ * Ytstenut Status service.
+ *
+ * Each Ytstenut Status object is associated with a relevant Ytstenut-enabled
+ * telepathy connection, represented by a #TpConnection object. To create a new
+ * TpYtsStatus object for a given connection use the
+ * use tp_yts_status_ensure_for_connection_async() function.
+ *
+ * This object automatically keeps track of all the discovered Ytstenut
+ * services and their statuses. Use tp_yts_status_get_discovered_statuses()
+ * and tp_yts_status_get_discovered_services() or the equivalent properties
+ * to access this information. To be notified when these discovered properties
+ * change, use the #GObject::notify signal.
+ *
+ * To advertise the status of your service via Ytstenut use the
+ * tp_yts_status_advertise_status_async() function.
  */
 
 /**
@@ -154,12 +168,52 @@ tp_yts_status_class_init (TpYtsStatusClass *klass)
 
   g_type_add_class_private (TP_TYPE_YTS_STATUS, sizeof (TpYtsStatus));
 
+  /**
+   * TpYtsStatus:discovered-services:
+   *
+   * Get the discovered Ytstenut services. The hash table is of
+   * #TP_YTS_HASH_TYPE_SERVICE_MAP type, and has the following contents:
+   *
+   * <code><literallayout>
+   *    GHashTable (
+   *        gchar *service_name,
+   *        GValueArray (
+   *            gchar *service_type,
+   *            GHashTable (
+   *                gchar *language,
+   *                gchar *localized_name
+   *            )
+   *            gchar **capabilities
+   *        )
+   *    )
+   * </literallayout></code>
+   */
   g_object_class_install_property (object_class, PROP_DISCOVERED_SERVICES,
       g_param_spec_boxed ("discovered-services", "Discovered Services",
           "Discovered Ytstenut Service Information",
           TP_YTS_HASH_TYPE_SERVICE_MAP,
           G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
+  /**
+   * TpYtsStatus:discovered-statuses:
+   *
+   * Get the discovered Ytstenut statuses for services. The hash table is of
+   * #TP_YTS_HASH_TYPE_CONTACT_CAPABILITY_MAP type, and has the following
+   * contents:
+   *
+   * <code><literallayout>
+   *    GHashTable (
+   *        gchar *contact_id,
+   *        GHashTable (
+   *            gchar *capability,
+   *            GHashTable (
+   *                gchar *service_name,
+   *                gchar *status_xml
+   *            )
+   *        )
+   *    )
+   * </literallayout></code>
+   */
   g_object_class_install_property (object_class, PROP_DISCOVERED_STATUSES,
       g_param_spec_boxed ("discovered-statuses", "Discovered Statuses",
           "Discovered Ytstenut Status Information",
@@ -329,6 +383,15 @@ on_connection_future_ensure_sidecar_returned (GObject *source_object,
   g_free (object_path);
 }
 
+/**
+ * tp_yts_status_ensure_for_connection_async:
+ * @connection: The Ytstenut enabled connection
+ * @cancellable: Not used
+ * @callback: A callback which should be called when the result is ready
+ * @user_data: Data to pass to the callback
+ *
+ * Create a #TpYtsStatus object for a Ytstenut enabled connection.
+ */
 void
 tp_yts_status_ensure_for_connection_async (TpConnection *connection,
     GCancellable *cancellable,
@@ -347,6 +410,17 @@ tp_yts_status_ensure_for_connection_async (TpConnection *connection,
       on_connection_future_ensure_sidecar_returned, res);
 }
 
+/**
+ * tp_yts_status_ensure_for_connection_finish:
+ * @connection: The Ytstenut enabled connection
+ * @result: The result object passed to the callback
+ * @error: If an error occurred, this will be set
+ *
+ * Complete an asynchronous operation to create a #TpYtsStatus object.
+ *
+ * Returns: A new #TpYtsStatus proxy, which you can use to access
+ * the Ytstenut Status service. If the operation failed, %NULL will be returned.
+ */
 TpYtsStatus *
 tp_yts_status_ensure_for_connection_finish (TpConnection *connection,
     GAsyncResult *result,
@@ -384,7 +458,20 @@ on_status_advertise_status_returned (TpYtsStatus *self,
   g_simple_async_result_complete (res);
 }
 
-void tp_yts_status_advertise_status_async (TpYtsStatus *self,
+/**
+ * tp_yts_status_advertise_status_async:
+ * @self: The status proxy
+ * @capability: The Ytstenut string of the capability to advertise.
+ * @service_name: The Ytstenut service name for this service.
+ * @status_xml: The Ytstenut status as a UTF-8 encoded string.
+ * @cancellable: Not used
+ * @callback: A callback which should be called when the result is ready
+ * @user_data: Data to pass to the callback
+ *
+ * Advertise Ytstenut status for a service running on this device.
+ */
+void
+tp_yts_status_advertise_status_async (TpYtsStatus *self,
     const gchar *capability,
     const gchar *service_name,
     const gchar *status_xml,
@@ -404,6 +491,16 @@ void tp_yts_status_advertise_status_async (TpYtsStatus *self,
       res, g_object_unref, G_OBJECT (self));
 }
 
+/**
+ * tp_yts_status_advertise_status_finish:
+ * @self: The status proxy
+ * @result: The result object passed to the callback
+ * @error: If an error occurred, this will be set
+ *
+ * Complete an asynchronous operation advertise Ytstenut service status.
+ *
+ * Returns: %TRUE if the operation succeeded.
+ */
 gboolean
 tp_yts_status_advertise_status_finish (TpYtsStatus *self,
     GAsyncResult *result,
@@ -424,6 +521,30 @@ tp_yts_status_advertise_status_finish (TpYtsStatus *self,
   return TRUE;
 }
 
+/**
+ * tp_yts_status_get_discovered_statuses:
+ * @self: The status proxy
+ *
+ * Get the discovered Ytstenut statuses for services. The hash table is of
+ * #TP_YTS_HASH_TYPE_CONTACT_CAPABILITY_MAP type, and has the following
+ * contents:
+ *
+ * <code><literallayout>
+ *    GHashTable (
+ *        gchar *contact_id,
+ *        GHashTable (
+ *            gchar *capability,
+ *            GHashTable (
+ *                gchar *service_name,
+ *                gchar *status_xml
+ *            )
+ *        )
+ *    )
+ * </literallayout></code>
+ *
+ * Returns: The service statuses. This table is owned by the #TpYtsStatus
+ *      object and should not be freed or modified.
+ */
 GHashTable *
 tp_yts_status_get_discovered_statuses (TpYtsStatus *self)
 {
@@ -431,6 +552,30 @@ tp_yts_status_get_discovered_statuses (TpYtsStatus *self)
   return self->priv->discovered_statuses;
 }
 
+/**
+ * tp_yts_status_get_discovered_services:
+ * @self: The status proxy
+ *
+ * Get the discovered Ytstenut services. The hash table is of
+ * #TP_YTS_HASH_TYPE_SERVICE_MAP type, and has the following contents:
+ *
+ * <code><literallayout>
+ *    GHashTable (
+ *        gchar *service_name,
+ *        GValueArray (
+ *            gchar *service_type,
+ *            GHashTable (
+ *                gchar *language,
+ *                gchar *localized_name
+ *            )
+ *            gchar **capabilities
+ *        )
+ *    )
+ * </literallayout></code>
+ *
+ * Returns: The services. This table is owned by the #TpYtsStatus
+ *      object and should not be freed or modified.
+ */
 GHashTable *
 tp_yts_status_get_discovered_services (TpYtsStatus *self)
 {

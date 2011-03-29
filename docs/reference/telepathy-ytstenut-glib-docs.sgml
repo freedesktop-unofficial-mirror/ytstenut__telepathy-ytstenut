@@ -14,14 +14,16 @@
   </bookinfo>
 
   <chapter>
-    <title>Using Ytstenut Services</title>
+    <title>Using Ytstenut Objects</title>
     <xi:include href="xml/account-manager.xml"/>
+    <xi:include href="xml/status.xml"/>
   </chapter>
 
   <chapter>
-    <title>Implementing Ytstenut Services</title>
-    <xi:include href="xml/svc-account-manager.xml"/>
+    <title>Implementing Ytstenut Objects</title>
     <xi:include href="tp-svc.xml"/>
+    <xi:include href="xml/svc-account-manager.xml"/>
+    <xi:include href="xml/svc-status.xml"/>
   </chapter>
 
   <chapter>
@@ -37,7 +39,6 @@
     <xi:include href="xml/svc.xml"/>
     <xi:include href="xml/enums.xml"/>
     <xi:include href="xml/gtypes-body.xml"/>
-    <xi:include href="xml/cli-status.xml"/>
     <xi:include href="xml/interfaces-body.xml"/>
     <xi:include href="xml/gtypes.xml"/>
     <xi:include href="xml/cli-channel.xml"/>

@@ -18,6 +18,14 @@
  */
 
 /**
+ * SECTION:svc-status
+ * @title: Implementing Status
+ * @short_description: helper for implementing Status
+ *
+ * A telepathy-glib helper for implementing the Status DBus interface.
+ */
+
+/**
  * SECTION:interfaces
  * @title: Ytstenut Interface Constants
  * @short_description: The various DBus interfaces involved in Ytstenut
