@@ -73,19 +73,9 @@ void tp_yts_status_advertise_status_async (TpYtsStatus *self,
 gboolean tp_yts_status_advertise_status_finish (TpYtsStatus *self,
     GAsyncResult *result, GError **error);
 
-void tp_yts_status_get_discovered_statuses_async (TpYtsStatus *self,
-    GCancellable *cancellable, GAsyncReadyCallback callback,
-    gpointer user_data);
+GHashTable *tp_yts_status_get_discovered_statuses (TpYtsStatus *self);
 
-GHashTable *tp_yts_status_get_discovered_statuses_finish (TpYtsStatus *self,
-    GAsyncResult *result, GError **error);
-
-void tp_yts_status_get_discovered_services_async (TpYtsStatus *self,
-    GCancellable *cancellable, GAsyncReadyCallback callback,
-    gpointer user_data);
-
-GHashTable *tp_yts_status_get_discovered_services_finish (TpYtsStatus *self,
-    GAsyncResult *result, GError **error);
+GHashTable *tp_yts_status_get_discovered_services (TpYtsStatus *self);
 
 G_END_DECLS
 
