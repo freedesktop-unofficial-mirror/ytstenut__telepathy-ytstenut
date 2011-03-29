@@ -5,6 +5,7 @@
 *~
 .*.swp
 *.stamp
+*.bak
 .deps
 .libs
 Makefile

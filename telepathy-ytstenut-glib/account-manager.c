@@ -242,7 +242,7 @@ tp_yts_account_manager_get_account_async (TpYtsAccountManager *self,
  *
  * Complete an asynchronous operation to get the Ytstenut account.
  *
- * Return: A newly allocated #TpAccount proxy, which you can use to access
+ * Returns: A newly allocated #TpAccount proxy, which you can use to access
  * the Ytstenut account. If the operation failed %NULL will be returned.
  */
 
