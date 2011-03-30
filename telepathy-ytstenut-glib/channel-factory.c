@@ -31,17 +31,17 @@
 /**
  * SECTION:channel-factory
  * @title: TpYtsChannelFactory
- * @short_description: channel factory for #TpYtsStatus
+ * @short_description: channel factory for #TpYtsChannel
  *
- * A #TpClientChannelFactory for creating #TpYtsStatus objects.
+ * A #TpClientChannelFactory for creating #TpYtsChannel objects. In general
+ * you won't need to use this object directly because #TpYtsClient creates
+ * and uses it as necessary.
  */
 
 /**
  * TpYtsChannelFactory:
  *
- * The #TpYtsChannelFactory is used with
- * tp_channel_request_set_channel_factory() so that #TpChannelRequest
- * will create #TpYtsChannel objects.
+ * A factory for creating #TpYtsChannel objects.
  */
 
 /**
@@ -88,6 +88,15 @@ static void factory_iface_init (TpClientChannelFactoryInterface *iface,
 #undef IMPLEMENT
 }
 
+/**
+ * tp_yts_channel_factory_new:
+ *
+ * Create a new #TpYtsChannelFactory object. In general you won't need to
+ * call this function because #TpYtsClient creates #TpYtsChannelFactory
+ * objects as necessary.
+ *
+ * Returns: A newly allocated factory object.
+ */
 TpClientChannelFactory *
 tp_yts_channel_factory_new (void)
 {

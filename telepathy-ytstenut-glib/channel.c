@@ -41,8 +41,21 @@
  * @title: TpYtsChannel
  * @short_description: proxy object for Ytstenut message channel
  *
- * The #TpYtsChannel object is used to communicate with the Ytstenut
- * Channel service.
+ * The #TpYtsChannel proxy object is used to communicate with a Ytstenut
+ * Channel implementation.
+ *
+ * You can use tp_yts_client_request_channel_async() to request new outgoing
+ * channels. To receive new incoming channels, use a #TpYtsClient and connect
+ * the #TpYtsClient::received-channels signal.
+ *
+ * On an outgoing channel you should use tp_yts_channel_request_async() to send
+ * off the Ytstenut request. To listen for replies or failures use the
+ * tp_yts_channel_connect_to_replied() and tp_yts_channel_connect_to_failed()
+ * functions respectively.
+ *
+ * On an incoming channel, you can use the tp_yts_channel_reply_async() or
+ * tp_yts_channel_fail_async() functions to send back a Ytstenut reply or
+ * error.
  */
 
 /**
@@ -82,6 +95,21 @@ tp_yts_channel_class_init (TpYtsChannelClass *klass)
       TP_ERROR_PREFIX, TP_ERRORS, TP_TYPE_ERROR);
 }
 
+/**
+ * tp_yts_channel_new_from_properties:
+ * @conn: The telepathy connection
+ * @object_path: The DBus object path of the channel.
+ * @immutable_properties: The immutable properties of the channel.
+ * @error: If not %NULL, used to raise an error when %NULL is returned.
+ *
+ * Create a new #TpYtsChannel proxy object for a channel that exists in the
+ * Ytstenut DBus implementation.
+ *
+ * In order to request a new outgoing channel use
+ * tp_yts_client_request_channel_async() instead of this function.
+ *
+ * Returns: A newly allocated #TpYtsChannel object.
+ */
 TpChannel *
 tp_yts_channel_new_from_properties (TpConnection *conn,
     const gchar *object_path,
@@ -111,7 +139,6 @@ finally:
   return ret;
 }
 
-
 static void
 on_channel_request_returned (TpYtsChannel *self,
     const GError *error,
@@ -129,6 +156,17 @@ on_channel_request_returned (TpYtsChannel *self,
   g_simple_async_result_complete_in_idle (res);
 }
 
+/**
+ * tp_yts_channel_request_async:
+ * @self: The channel proxy
+ * @cancellable: Not used
+ * @callback: Will be called when this operation completes
+ * @user_data: Data to pass to the callback
+ *
+ * Start an operation to send off a Ytstenut request on this newly created
+ * outgoing channel. This operation will fail on an incoming channel, or where
+ * the Ytstenut request has already been sent.
+ */
 void
 tp_yts_channel_request_async (TpYtsChannel *self,
     GCancellable *cancellable,
@@ -146,6 +184,16 @@ tp_yts_channel_request_async (TpYtsChannel *self,
       g_object_unref, G_OBJECT (self));
 }
 
+/**
+ * tp_yts_channel_request_finish:
+ * @self: The channel proxy
+ * @result: The operation result
+ * @error: If not %NULL, used to raise an error when %FALSE is returned.
+ *
+ * Complete an operation to send off a Ytstenut request.
+ *
+ * Returns: %TRUE if the operation succeeded.
+ */
 gboolean
 tp_yts_channel_request_finish (TpYtsChannel *self,
     GAsyncResult *result,
@@ -183,6 +231,19 @@ on_channel_reply_returned (TpYtsChannel *self,
   g_simple_async_result_complete_in_idle (res);
 }
 
+/**
+ * tp_yts_channel_reply_async:
+ * @self: The channel proxy
+ * @reply_attributes: A table of Ytstenut message attributes
+ * @reply_body: A UTF-8 encoded XML Ytstenut message, or %NULL
+ * @cancellable: Not used
+ * @callback: Will be called when this operation completes
+ * @user_data: Data to pass to the callback
+ *
+ * Start an operation to send a Ytstenut reply on this channel. This operation
+ * will fail if this is not an incoming channel, or if the already has had
+ * a reply or failure sent on it.
+ */
 void
 tp_yts_channel_reply_async (TpYtsChannel *self,
     GHashTable *reply_attributes,
@@ -206,6 +267,16 @@ tp_yts_channel_reply_async (TpYtsChannel *self,
       on_channel_reply_returned, res, g_object_unref, G_OBJECT (self));
 }
 
+/**
+ * tp_yts_channel_reply_finish:
+ * @self: The channel proxy
+ * @result: The operation result
+ * @error: If not %NULL, used to raise an error when %FALSE is returned.
+ *
+ * Complete an operation to send a Ytstenut reply.
+ *
+ * Returns: %TRUE if the operation succeeded.
+ */
 gboolean
 tp_yts_channel_reply_finish (TpYtsChannel *self,
     GAsyncResult *result,
@@ -243,6 +314,21 @@ on_channel_fail_returned (TpYtsChannel *self,
   g_simple_async_result_complete_in_idle (res);
 }
 
+/**
+ * tp_yts_channel_fail_async:
+ * @self: The channel proxy
+ * @error_type: The Ytstenut error type.
+ * @stanza_error_name: The name of the error.
+ * @ytstenut_error_name: The Ytstenut specific error name.
+ * @error_text: Error message text.
+ * @cancellable: Not used
+ * @callback: Will be called when this operation completes
+ * @user_data: Data to pass to the callback
+ *
+ * Start an operation to send a Ytstenut failure on this channel. This operation
+ * will fail if this is not an incoming channel, or if the already has had
+ * a reply or failure sent on it.
+ */
 void
 tp_yts_channel_fail_async (TpYtsChannel *self,
     TpYtsErrorType error_type,
@@ -268,6 +354,16 @@ tp_yts_channel_fail_async (TpYtsChannel *self,
       res, g_object_unref, G_OBJECT (self));
 }
 
+/**
+ * tp_yts_channel_fail_finish:
+ * @self: The channel proxy
+ * @result: The operation result
+ * @error: If not %NULL, used to raise an error when %FALSE is returned.
+ *
+ * Complete an operation to send a Ytstenut failure.
+ *
+ * Returns: %TRUE if the operation succeeded.
+ */
 gboolean
 tp_yts_channel_fail_finish (TpYtsChannel *self,
     GAsyncResult *result,

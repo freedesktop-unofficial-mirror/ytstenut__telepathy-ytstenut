@@ -58,7 +58,8 @@ GType tp_yts_client_get_type (void);
 #define TP_YTS_CLIENT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), \
     TP_TYPE_YTS_CLIENT, TpYtsClientClass))
 
-TpYtsClient *tp_yts_client_new (const gchar *service_name);
+TpYtsClient *tp_yts_client_new (const gchar *service_name,
+    TpAccount *account);
 
 gboolean tp_yts_client_register (TpYtsClient *self, GError **error);
 

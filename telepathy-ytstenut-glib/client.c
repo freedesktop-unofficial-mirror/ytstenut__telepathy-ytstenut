@@ -33,6 +33,34 @@
 #define DEBUG(msg, ...) \
     g_debug ("%s: " msg, G_STRFUNC, ##__VA_ARGS__)
 
+/**
+ * SECTION:client
+ * @title: TpYtsClient
+ * @short_description: client for managing Ytstenut channels
+ *
+ * A client implementation for requesting and handling Ytstenut #TpYtsChannel
+ * channels and their proxies.
+ *
+ * To create a new client use tp_yts_client_new() and then register it with
+ * tp_yts_client_register().
+ *
+ * You can use tp_yts_client_request_channel_async() to request new outgoing
+ * channels. To receive new incoming channels, use a #TpYtsClient and connect
+ * the #TpYtsClient::received-channels signal.
+ */
+
+/**
+ * TpYtsClient:
+ *
+ * This client implementation requests and handles Ytstenut channels.
+ */
+
+/**
+ * TpYtsClientClass:
+ *
+ * The class of a #TpYtsClient.
+ */
+
 enum {
   PROP_0,
   PROP_ACCOUNT,
@@ -221,15 +249,32 @@ tp_yts_client_class_init (TpYtsClientClass *klass)
 
   g_type_class_add_private (klass, sizeof (TpYtsClientPrivate));
 
+  /**
+   * TpYtsClient:service-name:
+   *
+   * The local Ytstenut service name.
+   */
   g_object_class_install_property (object_class, PROP_SERVICE_NAME,
       g_param_spec_string ("service-name", "Service Name",
           "Ytstenut Service Name", NULL,
           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
+  /**
+   * TpYtsClient:account:
+   *
+   * The local Ytstenut account to use for accepting and creating channels.
+   */
   g_object_class_install_property (object_class, PROP_ACCOUNT,
       g_param_spec_string ("account", "Account", "Local Ytstenut Account", NULL,
           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
+  /**
+   * TpYtsClient::received-channels:
+   *
+   * This signal is emitted when one or more new incoming channels are
+   * available. Use tp_yts_client_accept_channel() to access the new incoming
+   * channel(s).
+   */
   signals[RECEIVED_CHANNELS] =
     g_signal_new ("received-channels",
       G_TYPE_FROM_CLASS (klass),
@@ -240,8 +285,18 @@ tp_yts_client_class_init (TpYtsClientClass *klass)
       0);
 }
 
+/**
+ * tp_yts_client_new:
+ * @service_name: The Ytstenut service name for this client.
+ * @account: The Ytstenut account for this client.
+ *
+ * Create a new #TpYtsClient object for the given Ytstenut service name
+ * and account. You should
+ *
+ * Returns: A newly allocated client object.
+ */
 TpYtsClient *
-tp_yts_client_new (const gchar *service_name)
+tp_yts_client_new (const gchar *service_name, TpAccount *account)
 {
   TpYtsClient *out = NULL;
   TpDBusDaemon *bus;
@@ -257,6 +312,7 @@ tp_yts_client_new (const gchar *service_name)
       "dbus-daemon", bus,
       "name", name,
       "uniquify-name", TRUE,
+      "account", account,
       NULL);
 
   g_object_unref (bus);
@@ -265,6 +321,16 @@ tp_yts_client_new (const gchar *service_name)
   return out;
 }
 
+/**
+ * tp_yts_client_register:
+ * @self: The client object.
+ * @error: If not %NULL, raise an error here when %FALSE is returned.
+ *
+ * Register this client with telepathy. This must be done before new channels
+ * are created or received.
+ *
+ * Returns: %TRUE if registering was successful.
+ */
 gboolean
 tp_yts_client_register (TpYtsClient *self,
     GError **error)
@@ -272,6 +338,20 @@ tp_yts_client_register (TpYtsClient *self,
   return tp_base_client_register (TP_BASE_CLIENT (self), error);
 }
 
+/**
+ * tp_yts_client_accept_channel:
+ * @self: The client object.
+ *
+ * Accept a new incoming Ytstenut channel. This function never blocks, and will
+ * return %NULL if no incoming channels are waiting.
+ *
+ * After the #TpYtsClient::received-channels signal is emitted, at least one
+ * new incoming channel will be available to be returned by this function.
+ *
+ * Returns: The new incoming Ytstenut channel or %NULL. The ownership of the
+ *      channel is transferred to the caller, who should close and release it as
+ *      expected.
+ */
 TpYtsChannel *
 tp_yts_client_accept_channel (TpYtsClient *self)
 {
@@ -302,6 +382,23 @@ on_channel_request_create_and_handle_channel_returned (GObject *source_object,
   g_simple_async_result_complete (res);
 }
 
+/**
+ * tp_yts_client_request_channel_async:
+ * @self: The client object
+ * @target_contact: The contact to open the channel to
+ * @target_service: The Ytstenut service to open the channel to
+ * @request_type: The type of request to send
+ * @request_attributes: A table of Ytstenut attributes, or %NULL
+ * @request_body: A UTF-8 encoded XML Ytstenut message, or %NULL
+ * @cancellable: Used to cancel this operation
+ * @callback: Called when the operation completes
+ * @user_data: Data to pass to the callback
+ *
+ * Start an operation to request a new Ytstenut channel.
+ *
+ * The new channel will have a Ytstenut request message ready to send. The
+ * message is assembled from the arguments specified here.
+ */
 void
 tp_yts_client_request_channel_async (TpYtsClient *self,
     TpContact *target_contact,
@@ -361,6 +458,17 @@ tp_yts_client_request_channel_async (TpYtsClient *self,
   g_hash_table_unref (request_properties);
 }
 
+/**
+ * tp_yts_client_request_channel_finish:
+ * @self: A client object
+ * @result: The operation result
+ * @error: If not %NULL, then raise an error here when returning %NULL.
+ *
+ * Get the result of an operation to create a new Ytstenut channel.
+ *
+ * Returns: A newly created Ytstenut channel, or %NULL if failed. The caller
+ *      is responsible to close and release the channel.
+ */
 TpYtsChannel *
 tp_yts_client_request_channel_finish (TpYtsClient *self,
     GAsyncResult *result,
