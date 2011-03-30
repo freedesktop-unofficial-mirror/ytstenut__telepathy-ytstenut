@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include "connection-future.h"
+#include "extensions.h"
 
 #include <telepathy-glib/defs.h>
 #include <telepathy-glib/gtypes.h>
@@ -28,7 +29,6 @@
 #include <telepathy-glib/proxy-subclass.h>
 #include <telepathy-glib/util.h>
 
-#include "_gen/interfaces.h"
 #include "_gen/cli-connection-future-body.h"
 
 #define DEBUG(msg, ...) \
@@ -77,7 +77,7 @@ on_connection_future_ensure_sidecar_returned (TpConnection *connection,
 }
 
 void
-extensions_tp_connection_future_ensure_sidecar_async (TpConnection *connection,
+_tp_yts_connection_future_ensure_sidecar_async (TpConnection *connection,
     const gchar *interface,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
@@ -88,24 +88,24 @@ extensions_tp_connection_future_ensure_sidecar_async (TpConnection *connection,
   g_return_if_fail (TP_IS_CONNECTION (connection));
 
   if (!tp_proxy_borrow_interface_by_id (TP_PROXY (connection),
-      EXTENSIONS_IFACE_QUARK_CONNECTION_FUTURE, NULL))
+      _TP_YTS_IFACE_QUARK_CONNECTION_FUTURE, NULL))
     {
       tp_proxy_add_interface_by_id (TP_PROXY (connection),
-          EXTENSIONS_IFACE_QUARK_CONNECTION_FUTURE);
+          _TP_YTS_IFACE_QUARK_CONNECTION_FUTURE);
       g_signal_connect (connection, "interface-added",
-          G_CALLBACK (extensions_cli_connection_future_add_signals), NULL);
+          G_CALLBACK (_tp_yts_cli_connection_future_add_signals), NULL);
     }
 
   res = g_simple_async_result_new (G_OBJECT (connection), callback, user_data,
-      extensions_tp_connection_future_ensure_sidecar_async);
+      _tp_yts_connection_future_ensure_sidecar_async);
 
-  extensions_cli_connection_future_call_ensure_sidecar (connection, -1,
+  _tp_yts_cli_connection_future_call_ensure_sidecar (connection, -1,
       interface, on_connection_future_ensure_sidecar_returned,
       res, g_object_unref, G_OBJECT (connection));
 }
 
 gchar *
-extensions_tp_connection_future_ensure_sidecar_finish (TpConnection *connection,
+_tp_yts_connection_future_ensure_sidecar_finish (TpConnection *connection,
     GAsyncResult *result,
     GHashTable **immutable_properties,
     GError **error)
@@ -119,7 +119,7 @@ extensions_tp_connection_future_ensure_sidecar_finish (TpConnection *connection,
   res = G_SIMPLE_ASYNC_RESULT (result);
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
       G_OBJECT (connection),
-      extensions_tp_connection_future_ensure_sidecar_async), NULL);
+      _tp_yts_connection_future_ensure_sidecar_async), NULL);
 
   if (g_simple_async_result_propagate_error (res, error))
     return NULL;

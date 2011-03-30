@@ -28,11 +28,11 @@
 
 G_BEGIN_DECLS
 
-void extensions_tp_connection_future_ensure_sidecar_async (
+void _tp_yts_connection_future_ensure_sidecar_async (
     TpConnection *connection, const gchar *interface, GCancellable *cancellable,
     GAsyncReadyCallback callback, gpointer user_data);
 
-gchar *extensions_tp_connection_future_ensure_sidecar_finish (
+gchar *_tp_yts_connection_future_ensure_sidecar_finish (
     TpConnection *connection, GAsyncResult *result,
     GHashTable **immutable_properties, GError **error);
 

@@ -57,7 +57,7 @@ _gen/all.xml: all.xml $(wildcard $(srcdir)/*.xml) $(wildcard $(top_srcdir)/spec/
 _gen/interfaces-body.h _gen/interfaces.h: _gen/all.xml \
 	$(tools_dir)/glib-interfaces-gen.py
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-interfaces-gen.py \
-		Extensions _gen/interfaces-body.h _gen/interfaces.h $<
+		_Tp_Yts _gen/interfaces-body.h _gen/interfaces.h $<
 
 _gen/cli-connection-future-body.h _gen/cli-connection-future.h: _gen/all.xml \
 	$(tools_dir)/glib-client-gen.py Makefile.am
@@ -65,6 +65,6 @@ _gen/cli-connection-future-body.h _gen/cli-connection-future.h: _gen/all.xml \
 		--group=connection_future \
 		--subclass=TpConnection \
 		--subclass-assert=TP_IS_CONNECTION \
-		--iface-quark-prefix=EXTENSIONS_IFACE_QUARK \
+		--iface-quark-prefix=_TP_YTS_IFACE_QUARK \
 		--tp-proxy-api=0.7.6 \
-		$< Extensions_Cli _gen/cli-connection-future
+		$< _Tp_Yts_Cli _gen/cli-connection-future

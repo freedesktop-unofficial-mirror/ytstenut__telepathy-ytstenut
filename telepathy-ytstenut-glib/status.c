@@ -358,7 +358,7 @@ on_connection_future_ensure_sidecar_returned (GObject *source_object,
 
   g_return_if_fail (TP_IS_CONNECTION (source_object));
 
-  object_path = extensions_tp_connection_future_ensure_sidecar_finish (
+  object_path = _tp_yts_connection_future_ensure_sidecar_finish (
       TP_CONNECTION (source_object), result, &immutable_properties, &error);
 
   if (error != NULL)
@@ -405,7 +405,7 @@ tp_yts_status_ensure_for_connection_async (TpConnection *connection,
   res = g_simple_async_result_new (G_OBJECT (connection), callback, user_data,
       tp_yts_status_ensure_for_connection_async);
 
-  extensions_tp_connection_future_ensure_sidecar_async (connection,
+  _tp_yts_connection_future_ensure_sidecar_async (connection,
       TP_YTS_IFACE_STATUS, cancellable,
       on_connection_future_ensure_sidecar_returned, res);
 }

@@ -6,7 +6,6 @@
 
 G_BEGIN_DECLS
 
-#include "_gen/cli-connection-future.h"
 #include "_gen/interfaces.h"
 
 G_END_DECLS
