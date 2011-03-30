@@ -359,15 +359,17 @@ tp_yts_client_accept_channel (TpYtsClient *self)
 }
 
 static void
-on_channel_request_create_and_handle_channel_returned (GObject *source_object,
+on_channel_request_create_and_handle_channel_returned (GObject *source,
     GAsyncResult *result, gpointer user_data)
 {
   GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+  TpAccountChannelRequest *channel_request =
+      TP_ACCOUNT_CHANNEL_REQUEST (source);
   TpChannel *channel;
   GError *error = NULL;
 
   channel = tp_account_channel_request_create_and_handle_channel_finish (
-      TP_ACCOUNT_CHANNEL_REQUEST (source_object), result, NULL, &error);
+      channel_request, result, NULL, &error);
   if (error == NULL)
     {
       g_simple_async_result_set_op_res_gpointer (res, channel, g_object_unref);
@@ -379,6 +381,7 @@ on_channel_request_create_and_handle_channel_returned (GObject *source_object,
     }
 
   g_simple_async_result_complete (res);
+  g_object_unref (channel_request);
 }
 
 /**
