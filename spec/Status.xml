@@ -131,6 +131,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:docstring>
     </tp:mapping>
 
+    <tp:mapping name="Contact_Service_Map">
+      <tp:member type="s" name="Contact_Id">
+        <tp:docstring>
+          The contact for the device on which these services are present.
+        </tp:docstring>
+      </tp:member>
+      <tp:member name="Services" type="a{s(sa{ss}as)}" tp:type="Service_Map">
+        <tp:docstring>
+          The services at this device.
+        </tp:docstring>
+      </tp:member>
+      <tp:docstring>
+        A map of device contacts to services.
+      </tp:docstring>
+    </tp:mapping>
+
     <tp:mapping name="Service_Map">
       <tp:member type="s" name="Name">
         <tp:docstring>
@@ -170,8 +186,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:docstring>
     </tp:struct>
 
-    <property name="DiscoveredServices" access="read" type="a{s(sa{ss}as)}"
-              tp:type="Service_Map" tp:name-for-bindings="Discovered_Services">
+    <property name="DiscoveredServices" access="read" type="a{sa{s(sa{ss}as)}}"
+              tp:type="Contact_Service_Map"
+              tp:name-for-bindings="Discovered_Services">
       <tp:docstring>
         All the Ytstenut services that we've discovered on the local
         network.

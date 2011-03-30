@@ -176,14 +176,17 @@ tp_yts_status_class_init (TpYtsStatusClass *klass)
    *
    * <code><literallayout>
    *    GHashTable (
-   *        gchar *service_name,
-   *        GValueArray (
-   *            gchar *service_type,
-   *            GHashTable (
-   *                gchar *language,
-   *                gchar *localized_name
+   *        gchar *contact_id,
+   *        GHashTable (
+   *            gchar *service_name,
+   *            GValueArray (
+   *                gchar *service_type,
+   *                GHashTable (
+   *                    gchar *language,
+   *                    gchar *localized_name
+   *                )
+   *                gchar **capabilities
    *            )
-   *            gchar **capabilities
    *        )
    *    )
    * </literallayout></code>
@@ -191,7 +194,7 @@ tp_yts_status_class_init (TpYtsStatusClass *klass)
   g_object_class_install_property (object_class, PROP_DISCOVERED_SERVICES,
       g_param_spec_boxed ("discovered-services", "Discovered Services",
           "Discovered Ytstenut Service Information",
-          TP_YTS_HASH_TYPE_SERVICE_MAP,
+          TP_YTS_HASH_TYPE_CONTACT_SERVICE_MAP,
           G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   /**
@@ -557,18 +560,21 @@ tp_yts_status_get_discovered_statuses (TpYtsStatus *self)
  * @self: The status proxy
  *
  * Get the discovered Ytstenut services. The hash table is of
- * #TP_YTS_HASH_TYPE_SERVICE_MAP type, and has the following contents:
+ * #TP_YTS_HASH_TYPE_CONTACT_SERVICE_MAP type, and has the following contents:
  *
  * <code><literallayout>
  *    GHashTable (
- *        gchar *service_name,
- *        GValueArray (
- *            gchar *service_type,
- *            GHashTable (
- *                gchar *language,
- *                gchar *localized_name
+ *        gchar *contact_id,
+ *        GHashTable (
+ *            gchar *service_name,
+ *            GValueArray (
+ *                gchar *service_type,
+ *                GHashTable (
+ *                    gchar *language,
+ *                    gchar *localized_name
+ *                )
+ *                gchar **capabilities
  *            )
- *            gchar **capabilities
  *        )
  *    )
  * </literallayout></code>
