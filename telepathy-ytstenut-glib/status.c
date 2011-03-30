@@ -278,7 +278,7 @@ on_properties_get_all_returned (TpProxy *proxy,
       g_simple_async_result_set_from_error (res, error);
     }
 
-  g_simple_async_result_complete (res);
+  g_simple_async_result_complete_in_idle (res);
 }
 
 static void
@@ -341,7 +341,7 @@ on_status_new_returned (GObject *source_object,
 
   g_simple_async_result_set_op_res_gpointer (res, g_object_ref (source_object),
       g_object_unref);
-  g_simple_async_result_complete_in_idle (res);
+  g_simple_async_result_complete (res);
 
   g_object_unref (res);
 }
@@ -455,7 +455,7 @@ on_status_advertise_status_returned (TpYtsStatus *self,
       g_simple_async_result_set_from_error (res, error);
     }
 
-  g_simple_async_result_complete (res);
+  g_simple_async_result_complete_in_idle (res);
 }
 
 /**

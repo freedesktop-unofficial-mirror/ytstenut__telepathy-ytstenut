@@ -73,7 +73,7 @@ on_connection_future_ensure_sidecar_returned (TpConnection *connection,
       g_simple_async_result_set_from_error (res, error);
     }
 
-  g_simple_async_result_complete (res);
+  g_simple_async_result_complete_in_idle (res);
 }
 
 void
