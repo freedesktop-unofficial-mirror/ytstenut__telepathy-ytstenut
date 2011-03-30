@@ -18,8 +18,6 @@ libtelepathy_ytstenut_glib_la_SOURCES = \
     channel-factory.h \
     client.c \
     client.h \
-    errors.c \
-    errors.h \
     generated.h \
     status.c \
     status.h \
@@ -59,7 +57,6 @@ tpytstenutglibinclude_HEADERS = \
     channel.h \
     channel-factory.h \
     client.h \
-    errors.h \
     generated.h \
     status.h \
     telepathy-ytstenut-glib.h

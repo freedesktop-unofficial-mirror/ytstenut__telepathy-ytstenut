@@ -195,18 +195,6 @@ TP_IS_YTS_CLIENT_CLASS
 </SECTION>
 
 <SECTION>
-<FILE>errors</FILE>
-TP_YTS_TYPE_ERROR
-tp_yts_error_get_type
-TP_YTS_ERRORS
-tp_yts_errors_quark
-TpYtsError
-tp_yts_error_get_dbus_name
-TP_YTS_ERROR_PREFIX
-TP_YTS_ERROR_STR_PLACEHOLDER
-</SECTION>
-
-<SECTION>
 <FILE>interfaces</FILE>
 TP_YTS_IFACE_CHANNEL
 TP_YTS_IFACE_QUARK_CHANNEL
