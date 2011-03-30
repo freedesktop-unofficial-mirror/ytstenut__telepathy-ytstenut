@@ -255,7 +255,7 @@ tp_yts_channel_reply_async (TpYtsChannel *self,
   GSimpleAsyncResult *res;
 
   g_return_if_fail (TP_IS_YTS_CHANNEL (self));
-  g_return_if_fail (reply_attributes);
+  g_return_if_fail (reply_attributes != NULL);
 
   if (!reply_body)
     reply_body = "";
@@ -342,9 +342,9 @@ tp_yts_channel_fail_async (TpYtsChannel *self,
   GSimpleAsyncResult *res;
 
   g_return_if_fail (TP_IS_YTS_CHANNEL (self));
-  g_return_if_fail (stanza_error_name);
-  g_return_if_fail (ytstenut_error_name);
-  g_return_if_fail (error_text);
+  g_return_if_fail (stanza_error_name != NULL);
+  g_return_if_fail (ytstenut_error_name != NULL);
+  g_return_if_fail (error_text != NULL);
 
   res = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
       tp_yts_channel_fail_async);

@@ -133,7 +133,6 @@ tp_yts_client_constructed (GObject *obj)
 
   tp_base_client_set_handler_bypass_approval (client, FALSE);
 
-  /* Handle ServerTLSConnection and ServerAuthentication channels */
   tp_base_client_take_handler_filter (client, tp_asv_new (
       /* ChannelType */
       TP_PROP_CHANNEL_CHANNEL_TYPE, G_TYPE_STRING, TP_YTS_IFACE_CHANNEL,
@@ -213,7 +212,7 @@ tp_yts_client_dispose (GObject *object)
 
   tp_clear_object (&self->priv->factory);
 
-  while (!g_queue_is_empty(&self->priv->incoming_channels))
+  while (!g_queue_is_empty (&self->priv->incoming_channels))
     {
       channel = g_queue_pop_head (&self->priv->incoming_channels);
       tp_channel_close_async (channel, on_channel_close_returned, channel);
