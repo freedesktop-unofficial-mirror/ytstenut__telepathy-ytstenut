@@ -172,7 +172,7 @@ AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
 dnl Check for telepathy-glib
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.7.37])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.13.14])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)
