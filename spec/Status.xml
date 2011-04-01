@@ -225,5 +225,47 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
       </tp:docstring>
     </property>
 
+    <signal name="ServiceAdded" tp:name-for-bindings="Service_Added">
+      <arg name="Contact_Id" type="s">
+        <tp:docstring>
+          The contact for the device on which a service was added.
+        </tp:docstring>
+      </arg>
+      <arg name="Service_Name" type="s">
+        <tp:docstring>
+          The name of the service which was added.
+        </tp:docstring>
+      </arg>
+      <arg name="Service" type="(sa{ss}as)" tp:type="Service">
+        <tp:docstring>
+          Details of the service added.
+        </tp:docstring>
+      </arg>
+      <tp:docstring>
+        This signal is emitted when we discover that a Ytstenut service has
+        been advertised by a Contact. The
+        <tp:member-ref>DiscoveredServices</tp:member-ref> property
+        will have been updated before this signal is emitted.
+      </tp:docstring>
+    </signal>
+
+    <signal name="ServiceRemoved" tp:name-for-bindings="Service_Removed">
+      <arg name="Contact_Id" type="s">
+        <tp:docstring>
+          The contact for the device on which a service was removed.
+        </tp:docstring>
+      </arg>
+      <arg name="Service_Name" type="s">
+        <tp:docstring>
+          The name of the service which was removed.
+        </tp:docstring>
+      </arg>
+      <tp:docstring>
+        This signal is emitted when we discover that a Ytstenut service has
+        been removed by a Contact. The
+        <tp:member-ref>DiscoveredServices</tp:member-ref> property
+        will have been updated before this signal is emitted.
+      </tp:docstring>
+    </signal>
   </interface>
 </node>
