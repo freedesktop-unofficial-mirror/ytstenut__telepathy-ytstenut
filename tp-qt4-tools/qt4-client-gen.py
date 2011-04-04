@@ -160,9 +160,9 @@ public:
      *
      * \\return The D-Bus interface name.
      */
-    static inline const char *staticInterfaceName()
+    static inline QLatin1String staticInterfaceName()
     {
-        return "%(dbusname)s";
+        return QLatin1String("%(dbusname)s");
     }
 
     /**
