@@ -85,7 +85,9 @@ enum {
 };
 
 struct _TpYtsStatusPrivate {
-  TpProxySignalConnection *properties_changed;
+  TpProxySignalConnection *status_changed_sig;
+  TpProxySignalConnection *service_added_sig;
+  TpProxySignalConnection *service_removed_sig;
   GHashTable *discovered_services;
   GHashTable *discovered_statuses;
 };
@@ -98,14 +100,165 @@ G_DEFINE_TYPE_WITH_CODE (TpYtsStatus, tp_yts_status, TP_TYPE_PROXY,
 );
 
 static void
+on_status_changed (TpYtsStatus *self,
+    const gchar *contact_id,
+    const gchar *capability,
+    const gchar *service_name,
+    const gchar *status,
+    gpointer user_data,
+    GObject *weak_object)
+{
+  GHashTable *capability_service;
+  GHashTable *service_status;
+  gboolean removing;
+
+  removing = tp_str_empty (status);
+
+  /* Dig out the capability/service dict */
+  capability_service = g_hash_table_lookup (self->priv->discovered_statuses,
+      contact_id);
+  if (capability_service == NULL)
+    {
+      if (removing)
+        return;
+      capability_service = g_hash_table_new_full (g_str_hash, g_str_equal,
+          g_free, (GDestroyNotify) g_hash_table_unref);
+      g_hash_table_replace (self->priv->discovered_statuses,
+          g_strdup (contact_id), capability_service);
+    }
+
+  /* Dig out the service/status dict */
+  service_status = g_hash_table_lookup (capability_service, capability);
+  if (service_status == NULL)
+    {
+      if (removing)
+        return;
+      service_status = g_hash_table_new_full (g_str_hash, g_str_equal, g_free,
+          g_free);
+      g_hash_table_replace (capability_service, g_strdup (capability),
+          service_status);
+    }
+
+  if (removing)
+    {
+      g_hash_table_remove (service_status, service_name);
+      if (g_hash_table_size (service_status) == 0)
+        {
+          g_hash_table_remove (capability_service, capability);
+          if (g_hash_table_size (capability_service) == 0)
+            {
+              g_hash_table_remove (self->priv->discovered_statuses, contact_id);
+            }
+        }
+    }
+  else
+    {
+      g_hash_table_replace (service_status, g_strdup (service_name),
+          g_strdup (status));
+    }
+
+  g_object_notify (G_OBJECT (self), "discovered-statuses");
+}
+
+static void
+on_service_added (TpYtsStatus *self,
+    const gchar *contact_id,
+    const gchar *service_name,
+    const GValueArray *service,
+    gpointer user_data,
+    GObject *weak_object)
+{
+  GHashTable *service_name_info;
+
+  /* Dig out the capability/service dict */
+  service_name_info = g_hash_table_lookup (self->priv->discovered_services,
+      contact_id);
+  if (service_name_info == NULL)
+    {
+      service_name_info = g_hash_table_new_full (g_str_hash, g_str_equal,
+          g_free, (GDestroyNotify) g_value_array_free);
+      g_hash_table_replace (self->priv->discovered_services,
+          g_strdup (contact_id), service_name_info);
+    }
+
+  /* Add in the service info */
+  g_hash_table_replace (service_name_info, g_strdup (service_name),
+      g_value_array_copy (service));
+
+  g_object_notify (G_OBJECT (self), "discovered-services");
+}
+
+static void
+on_service_removed (TpYtsStatus *self,
+    const gchar *contact_id,
+    const gchar *service_name,
+    gpointer user_data,
+    GObject *weak_object)
+{
+  GHashTable *service_name_info;
+
+  /* Dig out the capability/service dict */
+  service_name_info = g_hash_table_lookup (self->priv->discovered_services,
+      contact_id);
+  if (service_name_info == NULL)
+    return;
+
+  /* Add in the service info */
+  g_hash_table_remove (service_name_info, service_name);
+  if (g_hash_table_size (service_name_info) == 0)
+    g_hash_table_remove (self->priv->discovered_services, contact_id);
+
+  g_object_notify (G_OBJECT (self), "discovered-services");
+}
+
+static void
 tp_yts_status_init (TpYtsStatus *self)
 {
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, TP_TYPE_YTS_STATUS,
       TpYtsStatusPrivate);
 
   /* Placeholder values for these tables */
-  self->priv->discovered_services = g_hash_table_new (g_str_hash, g_str_equal);
-  self->priv->discovered_statuses = g_hash_table_new (g_str_hash, g_str_equal);
+  self->priv->discovered_services = g_hash_table_new_full (g_str_hash,
+      g_str_equal, g_free, (GDestroyNotify) g_hash_table_unref);
+  self->priv->discovered_statuses = g_hash_table_new_full (g_str_hash,
+      g_str_equal, g_free, (GDestroyNotify) g_hash_table_unref);
+}
+
+static void
+tp_yts_status_constructed (GObject *object)
+{
+  TpYtsStatus *self = TP_YTS_STATUS (object);
+  GError *error = NULL;
+
+  if (G_OBJECT_CLASS (tp_yts_status_parent_class)->constructed)
+    G_OBJECT_CLASS (tp_yts_status_parent_class)->constructed (object);
+
+  self->priv->status_changed_sig = tp_yts_status_connect_to_status_changed (
+      self, on_status_changed, NULL, NULL, NULL, &error);
+  if (error)
+    {
+      g_warning ("couldn't connect to StatusChanged signal: %s",
+          error->message);
+      g_clear_error (&error);
+    }
+
+  self->priv->service_added_sig = tp_yts_status_connect_to_service_added (
+      self, on_service_added, NULL, NULL, NULL, &error);
+  if (error)
+    {
+      g_warning ("couldn't connect to ServiceAdded signal: %s",
+          error->message);
+      g_clear_error (&error);
+    }
+
+  self->priv->service_removed_sig = tp_yts_status_connect_to_service_removed (
+      self, on_service_removed, NULL, NULL, NULL, &error);
+  if (error)
+    {
+      g_warning ("couldn't connect to ServiceRemoved signal: %s",
+          error->message);
+      g_clear_error (&error);
+    }
 }
 
 static void
@@ -135,9 +288,15 @@ tp_yts_status_dispose (GObject *object)
 {
   TpYtsStatus *self = TP_YTS_STATUS (object);
 
-  if (self->priv->properties_changed != NULL)
-    tp_proxy_signal_connection_disconnect (self->priv->properties_changed);
-  self->priv->properties_changed = NULL;
+  if (self->priv->service_added_sig)
+    tp_proxy_signal_connection_disconnect (self->priv->service_added_sig);
+  self->priv->service_added_sig = NULL;
+  if (self->priv->service_removed_sig)
+    tp_proxy_signal_connection_disconnect (self->priv->service_removed_sig);
+  self->priv->service_removed_sig = NULL;
+  if (self->priv->status_changed_sig)
+    tp_proxy_signal_connection_disconnect (self->priv->status_changed_sig);
+  self->priv->status_changed_sig = NULL;
 
   G_OBJECT_CLASS (tp_yts_status_parent_class)->dispose (object);
 }
@@ -160,6 +319,7 @@ tp_yts_status_class_init (TpYtsStatusClass *klass)
   TpProxyClass *proxy_class = TP_PROXY_CLASS (klass);
   GType tp_type = TP_TYPE_YTS_STATUS;
 
+  object_class->constructed = tp_yts_status_constructed;
   object_class->get_property = tp_yts_status_get_property;
   object_class->dispose = tp_yts_status_dispose;
   object_class->finalize = tp_yts_status_finalize;
@@ -231,51 +391,36 @@ tp_yts_status_class_init (TpYtsStatusClass *klass)
 }
 
 static void
-on_properties_changed (TpProxy *proxy,
-    const gchar *interface_name,
-    GHashTable *changed_properties,
-    const gchar **invalidated_properties,
-    gpointer user_data,
-    GObject *weak_object)
-{
-  TpYtsStatus *self = TP_YTS_STATUS (proxy);
-  GHashTableIter iter;
-  gpointer key;
-  gpointer value;
-
-  g_hash_table_iter_init (&iter, changed_properties);
-  while (g_hash_table_iter_next (&iter, &key, &value))
-    {
-      if (!tp_strdiff (key, "DiscoveredServices"))
-        {
-          g_hash_table_unref (self->priv->discovered_services);
-          self->priv->discovered_services = g_value_dup_boxed (value);
-          g_object_notify (G_OBJECT (self), "discovered-services");
-        }
-      if (!tp_strdiff (key, "DiscoveredStatuses"))
-        {
-          g_hash_table_unref (self->priv->discovered_statuses);
-          self->priv->discovered_statuses = g_value_dup_boxed (value);
-          g_object_notify (G_OBJECT (self), "discovered-statuses");
-        }
-    }
-}
-
-static void
 on_properties_get_all_returned (TpProxy *proxy,
     GHashTable *properties,
     const GError *error,
     gpointer user_data,
     GObject *weak_object)
 {
+  TpYtsStatus *self = TP_YTS_STATUS (proxy);
   GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+  GHashTableIter iter;
+  gpointer key;
+  gpointer value;
 
   if (error == NULL)
     {
-      /* Feed these properties in as if we received a change notificaiton */
-      on_properties_changed (proxy, TP_YTS_IFACE_STATUS, properties, NULL, NULL,
-          NULL);
-    }
+      g_hash_table_iter_init (&iter, properties);
+      while (g_hash_table_iter_next (&iter, &key, &value))
+        {
+          if (!tp_strdiff (key, "DiscoveredServices"))
+            {
+              g_hash_table_unref (self->priv->discovered_services);
+              self->priv->discovered_services = g_value_dup_boxed (value);
+              g_object_notify (G_OBJECT (self), "discovered-services");
+            }
+          if (!tp_strdiff (key, "DiscoveredStatuses"))
+            {
+              g_hash_table_unref (self->priv->discovered_statuses);
+              self->priv->discovered_statuses = g_value_dup_boxed (value);
+              g_object_notify (G_OBJECT (self), "discovered-statuses");
+            }
+        }    }
   else
     {
       g_simple_async_result_set_from_error (res, error);
@@ -293,22 +438,9 @@ tp_yts_status_init_async (GAsyncInitable *initable,
 {
   TpYtsStatus *self = TP_YTS_STATUS (initable);
   GSimpleAsyncResult *res;
-  GError *error = NULL;
 
   res = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
       tp_yts_status_init_async);
-
-  self->priv->properties_changed =
-      tp_cli_dbus_properties_connect_to_properties_changed (self,
-          on_properties_changed, NULL, NULL, NULL, &error);
-
-  if (error != NULL)
-    {
-      g_simple_async_result_set_from_error (res, error);
-      g_clear_error (&error);
-      g_simple_async_result_complete_in_idle (res);
-      return;
-    }
 
   tp_cli_dbus_properties_call_get_all (self, -1, TP_YTS_IFACE_STATUS,
       on_properties_get_all_returned, res, g_object_unref, G_OBJECT (self));
