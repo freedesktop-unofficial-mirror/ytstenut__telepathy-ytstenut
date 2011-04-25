@@ -170,6 +170,33 @@ tp_yts_account_manager_dup (void)
 }
 
 static void
+on_account_prepared (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+  GError *error = NULL;
+
+  if (!tp_proxy_prepare_finish (source, result, &error))
+    {
+      DEBUG ("Failed to prepare the TpAccount: %s", error->message);
+      g_simple_async_result_set_from_error (res, error);
+      g_clear_error (&error);
+
+      /* get rid of the account */
+      g_object_unref (source);
+    }
+  else
+    {
+      g_simple_async_result_set_op_res_gpointer (res, source,
+          g_object_unref);
+    }
+
+  g_simple_async_result_complete (res);
+  g_object_unref (res);
+}
+
+static void
 on_account_manager_get_account_returned (TpProxy *proxy,
     const GValue *value,
     const GError *error,
@@ -187,8 +214,9 @@ on_account_manager_get_account_returned (TpProxy *proxy,
       account = tp_account_new (tp_proxy_get_dbus_daemon (proxy), path, &err);
       if (err == NULL)
         {
-          g_simple_async_result_set_op_res_gpointer (res, account,
-              g_object_unref);
+          tp_proxy_prepare_async (account, NULL, on_account_prepared,
+              g_object_ref (res));
+          return;
         }
       else
         {
@@ -242,8 +270,8 @@ tp_yts_account_manager_get_account_async (TpYtsAccountManager *self,
  *
  * Complete an asynchronous operation to get the Ytstenut account.
  *
- * Note that the #TpAccount returned is not guaranteed to have been
- * prepared with any features and this should be done separately.
+ * The returned #TpAccount is guaranteed to have been prepared using
+ * tp_proxy_prepare() for the CORE feature.
  *
  * Returns: A newly allocated #TpAccount proxy, which you can use to access
  * the Ytstenut account. If the operation failed %NULL will be returned.
