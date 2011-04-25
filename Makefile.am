@@ -3,9 +3,15 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = \
 	tp-qt4-tools \
 	tp-glib-tools \
-	TelepathyYtstenutQt4 \
-	telepathy-ytstenut-glib \
 	docs
+
+if ENABLE_QT4
+SUBDIRS += TelepathyYtstenutQt4
+endif
+
+if ENABLE_GLIB
+SUBDIRS += telepathy-ytstenut-glib
+endif
 
 GIT = git
 GZIP = gzip

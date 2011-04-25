@@ -37,7 +37,7 @@ m4_define([tp_ytstenut_version],
           [m4_if(tp_ytstenut_nano_version, 0, [tp_ytstenut_base_version],
               [tp_ytstenut_base_version].[tp_ytstenut_nano_version])])
 
-AC_INIT([Telepathy-Ytstenut], [tp_ytstenut_version], [ytstenut@projects.maemo.org])
+AC_INIT([Telepathy-Ytstenut], [tp_ytstenut_version], [ytstenut@lists.collabora.co.uk])
 AC_LANG([C++])
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -128,54 +128,70 @@ dnl docs/Makefile.am needs to know whether it's an out of tree build
 dnl (srcdir != builddir)
 AM_CONDITIONAL([OUT_OF_TREE_BUILD], [test "z$ac_srcdir" != z.])
 
-dnl Check for QtCore
-PKG_CHECK_MODULES(QTCORE, [QtCore >= 4.5])
-AC_SUBST(QTCORE_CFLAGS)
-AC_SUBST(QTCORE_LIBS)
+AC_ARG_ENABLE(glib,
+  AC_HELP_STRING([--disable-glib],[compile without telepathy-ytstenut GLib library]),
+    enable_glib=$enableval, enable_glib=yes )
 
-MOC=`$PKG_CONFIG --variable=moc_location QtCore`
-AC_SUBST(MOC)
+AM_CONDITIONAL(ENABLE_GLIB, test x$enable_glib = xyes)
 
-dnl Check for QtDBus
-PKG_CHECK_MODULES(QTDBUS, [QtDBus >= 4.5])
-AC_SUBST(QTDBUS_CFLAGS)
-AC_SUBST(QTDBUS_LIBS)
+AC_ARG_ENABLE(qt4,
+  AC_HELP_STRING([--disable-qt4],[compile without telepathy-ytstenut-qt4 library]),
+    enable_qt4=$enableval, enable_qt4=yes )
 
-dnl Check for TelepathyQt4
-PKG_CHECK_MODULES(TP_QT4, [TelepathyQt4 >= 0.5])
-AC_SUBST(TP_QT4_CFLAGS)
-AC_SUBST(TP_QT4_LIBS)
+AM_CONDITIONAL(ENABLE_QT4, test x$enable_qt4 = xyes)
 
-dnl We want examples to be able to use TP_YTSTENUT_QT4_CFLAGS as though they
-dnl were independent programs that got them from pkgconfig; AC_SUBST'ing
-dnl TP_YTSTENUT_QT4_LIBS would interfere with dependency tracking, so don't do that
-TP_YTSTENUT_QT4_CFLAGS='-I${top_builddir}/TelepathyYtstenutQt4 -I${top_srcdir}'
-AC_SUBST(TP_YTSTENUT_QT4_CFLAGS)
+if test x$enable_qt4 = xyes; then
+  dnl Check for QtCore
+  PKG_CHECK_MODULES(QTCORE, [QtCore >= 4.5])
+  AC_SUBST(QTCORE_CFLAGS)
+  AC_SUBST(QTCORE_LIBS)
 
-dnl Check for Glib
-PKG_CHECK_MODULES(GLIB, [
+  MOC=`$PKG_CONFIG --variable=moc_location QtCore`
+  AC_SUBST(MOC)
+
+  dnl Check for QtDBus
+  PKG_CHECK_MODULES(QTDBUS, [QtDBus >= 4.5])
+  AC_SUBST(QTDBUS_CFLAGS)
+  AC_SUBST(QTDBUS_LIBS)
+
+  dnl Check for TelepathyQt4
+  PKG_CHECK_MODULES(TP_QT4, [TelepathyQt4 >= 0.5])
+  AC_SUBST(TP_QT4_CFLAGS)
+  AC_SUBST(TP_QT4_LIBS)
+
+  dnl We want examples to be able to use TP_YTSTENUT_QT4_CFLAGS as though they
+  dnl were independent programs that got them from pkgconfig; AC_SUBST'ing
+  dnl TP_YTSTENUT_QT4_LIBS would interfere with dependency tracking, so don't do that
+  TP_YTSTENUT_QT4_CFLAGS='-I${top_builddir}/TelepathyYtstenutQt4 -I${top_srcdir}'
+  AC_SUBST(TP_YTSTENUT_QT4_CFLAGS)
+fi
+
+if test x$enable_glib = xyes; then
+   dnl Check for Glib
+   PKG_CHECK_MODULES(GLIB, [
 	glib-2.0 >= 2.16,
 	gobject-2.0 >= 2.16,
 	gthread-2.0 >= 2.16,
 	gio-2.0 >= 2.16])
 
-AC_SUBST(GLIB_CFLAGS)
-AC_SUBST(GLIB_LIBS)
+  AC_SUBST(GLIB_CFLAGS)
+  AC_SUBST(GLIB_LIBS)
 
-GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
-AC_SUBST(GLIB_GENMARSHAL)
+  GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
+  AC_SUBST(GLIB_GENMARSHAL)
 
-dnl Check for D-Bus
-PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.78])
+  dnl Check for D-Bus
+  PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.78])
 
-AC_SUBST(DBUS_CFLAGS)
-AC_SUBST(DBUS_LIBS)
+  AC_SUBST(DBUS_CFLAGS)
+  AC_SUBST(DBUS_LIBS)
 
-dnl Check for telepathy-glib
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.13.14])
+  dnl Check for telepathy-glib
+  PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.13.14])
 
-AC_SUBST(TP_GLIB_CFLAGS)
-AC_SUBST(TP_GLIB_LIBS)
+  AC_SUBST(TP_GLIB_CFLAGS)
+  AC_SUBST(TP_GLIB_LIBS)
+fi
 
 dnl Check for code generation tools
 AM_PATH_PYTHON([2.5])
