@@ -126,7 +126,7 @@ tp_yts_channel_new_from_properties (TpConnection *conn,
   if (!tp_dbus_check_valid_object_path (object_path, error))
     goto finally;
 
-  ret = TP_CHANNEL (g_object_new (TP_TYPE_CHANNEL,
+  ret = TP_CHANNEL (g_object_new (TP_TYPE_YTS_CHANNEL,
         "connection", conn,
         "dbus-daemon", conn_proxy->dbus_daemon,
         "bus-name", conn_proxy->bus_name,
