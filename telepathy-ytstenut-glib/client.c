@@ -356,7 +356,7 @@ tp_yts_client_register (TpYtsClient *self,
 TpYtsChannel *
 tp_yts_client_accept_channel (TpYtsClient *self)
 {
-  g_return_val_if_fail (TP_IS_YTS_CHANNEL (self), NULL);
+  g_return_val_if_fail (TP_IS_YTS_CLIENT (self), NULL);
   return g_queue_pop_head (&self->priv->incoming_channels);
 }
 
