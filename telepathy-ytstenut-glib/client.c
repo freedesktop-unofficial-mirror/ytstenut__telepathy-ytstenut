@@ -311,6 +311,7 @@ tp_yts_client_new (const gchar *service_name, TpAccount *account)
   out = g_object_new (TP_TYPE_YTS_CLIENT,
       "dbus-daemon", bus,
       "name", name,
+      "service-name", service_name,
       "uniquify-name", TRUE,
       "account", account,
       NULL);
