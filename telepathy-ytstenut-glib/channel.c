@@ -72,7 +72,7 @@
  * The class of a #TpYtsChannel.
  */
 
-G_DEFINE_TYPE (TpYtsChannel, tp_yts_channel, TP_TYPE_PROXY);
+G_DEFINE_TYPE (TpYtsChannel, tp_yts_channel, TP_TYPE_CHANNEL);
 
 static void
 tp_yts_channel_init (TpYtsChannel *self)
