@@ -35,6 +35,9 @@
 #include "_gen/gtypes.h"
 #include "_gen/cli-status-body.h"
 
+#include "_gen/signals-marshal.h"
+#include "_gen/register-dbus-glib-marshallers-body.h"
+
 #define DEBUG(msg, ...) \
     g_debug ("%s: " msg, G_STRFUNC, ##__VA_ARGS__)
 
@@ -232,6 +235,8 @@ tp_yts_status_constructed (GObject *object)
 
   if (G_OBJECT_CLASS (tp_yts_status_parent_class)->constructed)
     G_OBJECT_CLASS (tp_yts_status_parent_class)->constructed (object);
+
+  _tp_yts_register_dbus_glib_marshallers ();
 
   self->priv->status_changed_sig = tp_yts_status_connect_to_status_changed (
       self, on_status_changed, NULL, NULL, NULL, &error);
