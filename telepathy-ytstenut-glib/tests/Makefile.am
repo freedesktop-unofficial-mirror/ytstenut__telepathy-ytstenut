@@ -18,4 +18,5 @@ noinst_PROGRAMS = \
 	diddle-account-manager \
 	client-pong \
 	client-ping \
-	nosey-status
+	nosey-status \
+	passing-service
