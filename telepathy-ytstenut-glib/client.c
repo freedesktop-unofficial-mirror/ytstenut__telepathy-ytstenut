@@ -30,6 +30,9 @@
 #include <telepathy-glib/gtypes.h>
 #include <telepathy-glib/util.h>
 
+#include "_gen/signals-marshal.h"
+#include "_gen/register-dbus-glib-marshallers-body.h"
+
 #define DEBUG(msg, ...) \
     g_debug ("%s: " msg, G_STRFUNC, ##__VA_ARGS__)
 
@@ -128,6 +131,8 @@ tp_yts_client_constructed (GObject *obj)
 
   /* chain up to TpBaseClient first */
   G_OBJECT_CLASS (tp_yts_client_parent_class)->constructed (obj);
+
+  _tp_yts_register_dbus_glib_marshallers ();
 
   tp_base_client_set_channel_factory (client, self->priv->factory);
 

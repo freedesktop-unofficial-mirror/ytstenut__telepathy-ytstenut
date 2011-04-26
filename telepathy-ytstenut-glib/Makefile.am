@@ -28,6 +28,7 @@ nodist_libtelepathy_ytstenut_glib_la_SOURCES = \
     _gen/signals-marshal.c \
     _gen/signals-marshal.h \
     _gen/signals-marshal.list \
+    _gen/register-dbus-glib-marshallers-body.h \
     _gen/enums.h \
     _gen/gtypes.h \
     _gen/gtypes-body.h \
@@ -161,4 +162,8 @@ _gen/gtypes.h _gen/gtypes-body.h: _gen/all.xml \
 	$(tools_dir)/glib-gtypes-generator.py Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-gtypes-generator.py \
 		$< _gen/gtypes Tp_Yts
+
+_gen/register-dbus-glib-marshallers-body.h: _gen/all.xml \
+	$(tools_dir)/glib-client-marshaller-gen.py Makefile.am
+	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-client-marshaller-gen.py $< _tp_yts > $@
 
