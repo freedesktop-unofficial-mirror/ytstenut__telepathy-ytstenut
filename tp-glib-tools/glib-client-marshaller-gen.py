@@ -31,7 +31,7 @@ class Generator(object):
         for signal in signals:
             self.do_signal(signal)
 
-        print 'void'
+        print 'static void'
         print '%s_register_dbus_glib_marshallers (void)' % self.prefix
         print '{'
 
