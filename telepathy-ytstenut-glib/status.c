@@ -326,7 +326,7 @@ tp_yts_status_class_init (TpYtsStatusClass *klass)
 
   proxy_class->interface = TP_YTS_IFACE_QUARK_STATUS;
 
-  g_type_add_class_private (TP_TYPE_YTS_STATUS, sizeof (TpYtsStatus));
+  g_type_class_add_private (klass, sizeof (TpYtsStatusPrivate));
 
   /**
    * TpYtsStatus:discovered-services:
