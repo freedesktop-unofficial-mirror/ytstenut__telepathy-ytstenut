@@ -71,7 +71,7 @@ failed_cb (TpYtsChannel *proxy,
 {
   g_print ("Got a fail!\n");
 
-  g_print ("%s, %s, %s\n", stanza_error_name, ytstenut_error_name, text);
+  g_print ("%u, %s, %s, %s\n", error_type, stanza_error_name, ytstenut_error_name, text);
 
   getoutofhere ();
 }
@@ -198,6 +198,26 @@ connection_prepared_cb (GObject *source_object,
 }
 
 static void
+notify_connection_cb (GObject *gobject,
+    GParamSpec *pspec,
+    gpointer user_data)
+{
+  TpAccount *account = TP_ACCOUNT (gobject);
+  GQuark features[] = { TP_CONNECTION_FEATURE_CONNECTED, 0 };
+  TpConnection *connection = tp_account_get_connection (account);
+
+  if (connection == NULL)
+    return;
+
+  g_print ("Trying to prepare account, this will only continue "
+      "if the account is connected...\n");
+
+  /* account already reffed */
+  tp_proxy_prepare_async (connection, features, connection_prepared_cb,
+      account);
+}
+
+static void
 am_get_account_cb (GObject *source_object,
     GAsyncResult *result,
     gpointer user_data)
@@ -215,16 +235,18 @@ am_get_account_cb (GObject *source_object,
     {
       /* We got the account fine, but we need to ensure some features
        * on it so we have the :self-contact property set. */
-      GQuark features[] = { TP_CONNECTION_FEATURE_CONNECTED, 0 };
-      TpConnection *connection;
+      TpConnection *connection = tp_account_get_connection (account);
 
-      connection = tp_account_get_connection (account);
+      if (connection != NULL)
+        {
+          notify_connection_cb (g_object_ref (account), NULL, NULL);
+        }
+      else
+        {
+          g_signal_connect (account, "notify::connection",
+              G_CALLBACK (notify_connection_cb), g_object_ref (account));
+        }
 
-      g_print ("Trying to prepare account, this will only continue "
-          "if the account is connected...\n");
-
-      tp_proxy_prepare_async (connection, features, connection_prepared_cb,
-          g_object_ref (account));
     }
 
   g_object_unref (account);
