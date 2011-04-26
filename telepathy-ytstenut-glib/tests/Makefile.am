@@ -17,4 +17,5 @@ LDADD = \
 noinst_PROGRAMS = \
 	diddle-account-manager \
 	client-pong \
-	client-ping
+	client-ping \
+	nosey-status
