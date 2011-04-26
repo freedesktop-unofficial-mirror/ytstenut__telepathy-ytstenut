@@ -487,14 +487,13 @@ on_connection_future_ensure_sidecar_returned (GObject *source_object,
     gpointer user_data)
 {
   GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
-  GHashTable *immutable_properties;
   gchar *object_path;
   GError *error = NULL;
 
   g_return_if_fail (TP_IS_CONNECTION (source_object));
 
   object_path = _tp_yts_connection_future_ensure_sidecar_finish (
-      TP_CONNECTION (source_object), result, &immutable_properties, &error);
+      TP_CONNECTION (source_object), result, NULL, &error);
 
   if (error != NULL)
     {
@@ -511,10 +510,8 @@ on_connection_future_ensure_sidecar_returned (GObject *source_object,
       "dbus-connection", tp_proxy_get_dbus_connection (source_object),
       "bus-name", tp_proxy_get_bus_name (source_object),
       "object-path", object_path,
-      "immutable-properties", immutable_properties,
       NULL);
 
-  g_hash_table_unref (immutable_properties);
   g_free (object_path);
 }
 
