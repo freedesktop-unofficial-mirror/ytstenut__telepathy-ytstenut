@@ -61,6 +61,21 @@ GType tp_yts_client_get_type (void);
 TpYtsClient *tp_yts_client_new (const gchar *service_name,
     TpAccount *account);
 
+void tp_yts_client_add_names (TpYtsClient *client,
+    const gchar *lang, ...);
+void tp_yts_client_add_name (TpYtsClient *client,
+    const gchar *lang, const gchar *name);
+
+void tp_yts_client_add_capabilities (TpYtsClient *client,
+    const gchar *cap, ...);
+void tp_yts_client_add_capability (TpYtsClient *client,
+    const gchar *cap);
+
+void tp_yts_client_add_interests (TpYtsClient *client,
+    const gchar *interest, ...);
+void tp_yts_client_add_interest (TpYtsClient *client,
+    const gchar *interest);
+
 gboolean tp_yts_client_register (TpYtsClient *self, GError **error);
 
 TpYtsChannel *tp_yts_client_accept_channel (TpYtsClient *self);

@@ -190,6 +190,12 @@ tp_yts_svc_channel_get_type
 TpYtsClient
 TpYtsClientClass
 tp_yts_client_new
+tp_yts_client_add_names
+tp_yts_client_add_name
+tp_yts_client_add_capabilities
+tp_yts_client_add_capability
+tp_yts_client_add_interests
+tp_yts_client_add_interest
 tp_yts_client_register
 tp_yts_client_accept_channel
 tp_yts_client_request_channel_async

@@ -295,17 +295,25 @@ tp_yts_client_class_init (TpYtsClientClass *klass)
  * @service_name: The Ytstenut service name for this client.
  * @account: The Ytstenut account for this client.
  *
- * Create a new #TpYtsClient object for the given Ytstenut service name
- * and account. You should
+ * Create a new #TpYtsClient object for the given Ytstenut name and
+ * account. After getting the new client object, you should add
+ * localized names, capabilities and interests with
+ * tp_yts_client_add_names(), tp_yts_client_add_capabilities() and
+ * tp_yts_client_add_interests() respectively.
+
+ * After setting these values, You should call
+ * tp_yts_client_register() to register the client. g_object_unref()
+ * should be used to free the object.
  *
  * Returns: A newly allocated client object.
  */
 TpYtsClient *
-tp_yts_client_new (const gchar *service_name, TpAccount *account)
+tp_yts_client_new (const gchar *service_name,
+    TpAccount *account)
 {
   TpYtsClient *out = NULL;
   TpDBusDaemon *bus;
-  gchar *name;
+  gchar *name, *tmp;
 
   g_return_val_if_fail (tp_dbus_check_valid_interface_name (service_name, NULL),
       NULL);
@@ -324,7 +332,208 @@ tp_yts_client_new (const gchar *service_name, TpAccount *account)
   g_object_unref (bus);
   g_free (name);
 
+  /* add uid handler capability token */
+  tmp = g_strdup_printf (TP_YTS_IFACE_CHANNEL "/uid/%s", service_name);
+  tp_base_client_add_handler_capability (TP_BASE_CLIENT (out), tmp);
+  g_free (tmp);
+
   return out;
+}
+
+/**
+ * tp_yts_client_add_names:
+ * @client: a #TpYtsClient
+ * @lang: the IETF language tag of the first name
+ * @...: the value of the first name and subsequent names, terminated
+ *   by %NULL
+ *
+ * Adds a list of localized names to @client. See
+ * tp_yts_client_add_name() for more details on the singular version
+ * of this function.
+ *
+ * <example>
+ *   <title>using tp_yts_client_add_names</title>
+ *   <programlisting>
+ * tp_yts_client_add_names (client,
+ *     "en_GB", "banana",
+ *     "fr", "la banane",
+ *     "de", "banane",
+ *     NULL);
+ *   </programlisting>
+ * </example>
+ */
+void
+tp_yts_client_add_names (TpYtsClient *client,
+    const gchar *lang,
+    ...)
+{
+  const gchar *key;
+  va_list ap;
+
+  va_start (ap, lang);
+
+  for (key = lang; key != NULL; key = va_arg (ap, const gchar *))
+    {
+      const gchar *val;
+
+      val = va_arg (ap, const gchar *);
+
+      if (val == NULL)
+        break;
+
+      tp_yts_client_add_name (client, key, val);
+    }
+
+  va_end (ap);
+
+}
+
+/**
+ * tp_yts_client_add_name:
+ * @client: a #TpYtsClient
+ * @lang: the IETF language tag
+ * @name: the localized name
+ *
+ * Adds @name as a localized name to @client. This will be advertised
+ * to other Ytstenut clients when @client is registered.
+ *
+ * This must be called before tp_yts_client_register() is called.
+ */
+void
+tp_yts_client_add_name (TpYtsClient *client,
+    const gchar *lang,
+    const gchar *name)
+{
+  gchar *tmp;
+
+  tmp = g_strdup_printf (TP_YTS_IFACE_CHANNEL "/name/%s/%s",
+      lang, name);
+
+  tp_base_client_add_handler_capability (TP_BASE_CLIENT (client), tmp);
+
+  g_free (tmp);
+}
+
+/**
+ * tp_yts_client_add_capabilities:
+ * @client: a #TpYtsClient
+ * @cap: the first capability to add
+ * @...: the subsequenet capabilities to add, followed by %NULL
+ *
+ * The plural version of tp_yts_client_add_capability().
+ *
+ * <example>
+ *   <title>using tp_yts_client_add_capabilities</title>
+ *   <programlisting>
+ * tp_yts_client_add_capabilities (client,
+ *     "urn:ytstenut:capabilities:yts-caps-video",
+ *     "urn:ytstenut:capabilities:yts-caps-audio",
+ *     NULL);
+ *   </programlisting>
+ * </example>
+ */
+void
+tp_yts_client_add_capabilities (TpYtsClient *client,
+    const gchar *first_cap,
+    ...)
+{
+  va_list ap;
+  const gchar *cap;
+
+  va_start (ap, first_cap);
+
+  for (cap = first_cap; cap != NULL; cap = va_arg (ap, const gchar *))
+    {
+      tp_yts_client_add_capability (client, cap);
+    }
+
+  va_end (ap);
+}
+
+/**
+ * tp_yts_client_add_capability:
+ * @client: a #TpYtsClient
+ * @cap: a capability to add
+ *
+ * Adds @cap as capability to @client. This will be advertised to
+ * other Ytstenut clients when @client is registered.
+ *
+ * This must be called before tp_yts_client_register() is called.
+ */
+void
+tp_yts_client_add_capability (TpYtsClient *client,
+    const gchar *cap)
+{
+  gchar *tmp;
+
+  tmp = g_strdup_printf (TP_YTS_IFACE_CHANNEL "/caps/%s", cap);
+
+  tp_base_client_add_handler_capability (TP_BASE_CLIENT (client), tmp);
+
+  g_free (tmp);
+}
+
+/**
+ * tp_yts_client_add_interests:
+ * @client: a #TpYtsClient
+ * @interest: the first interest to add
+ * @...: the subsequent interests to add, followed by %NULL
+ *
+ * The plural version of tp_yts_client_add_interest().
+ *
+ * <example>
+ *   <title>using tp_yts_client_add_interests</title>
+ *   <programlisting>
+ * tp_yts_client_add_interests (client,
+ *     "urn:ytstenut:capabilities:falling-over",
+ *     "urn:ytstenut:capabilities:taking-pictures-of-cats",
+ *     NULL);
+ *   </programlisting>
+ * </example>
+ */
+void
+tp_yts_client_add_interests (TpYtsClient *client,
+    const gchar *first_interest,
+    ...)
+{
+  va_list ap;
+  const gchar *interest;
+
+  va_start (ap, first_interest);
+
+  for (interest = first_interest;
+       interest != NULL;
+       interest = va_arg (ap, const gchar *))
+    {
+      tp_yts_client_add_interest (client, interest);
+    }
+
+  va_end (ap);
+}
+
+/**
+ * tp_yts_client_add_interest:
+ * @client: a #TpYtsClient
+ * @interest: an interest to add
+ *
+ * Adds @interest as an interest to @client. This will be advertised
+ * to other Ytstenut clients when @client is registered and as a
+ * result will mean that StatusChanged will be emitted for this
+ * interest from other services.
+ *
+ * This must be called before tp_yts_client_register() is called.
+ */
+void
+tp_yts_client_add_interest (TpYtsClient *client,
+    const gchar *interest)
+{
+  gchar *tmp;
+
+  tmp = g_strdup_printf (TP_YTS_IFACE_CHANNEL "/interested/%s", interest);
+
+  tp_base_client_add_handler_capability (TP_BASE_CLIENT (client), tmp);
+
+  g_free (tmp);
 }
 
 /**
