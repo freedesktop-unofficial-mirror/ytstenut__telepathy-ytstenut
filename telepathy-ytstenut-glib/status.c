@@ -565,7 +565,7 @@ tp_yts_status_ensure_for_connection_finish (TpConnection *connection,
 
   res = G_SIMPLE_ASYNC_RESULT (result);
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-          G_OBJECT (connection), tp_yts_status_advertise_status_async), FALSE);
+          G_OBJECT (connection), tp_yts_status_ensure_for_connection_async), FALSE);
 
   if (g_simple_async_result_propagate_error (res, error))
     return FALSE;
