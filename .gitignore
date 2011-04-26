@@ -45,6 +45,8 @@ telepathy-ytstenut-glib/telepathy-ytstenut-glib.pc
 tp-glib-tools/telepathy-glib-env
 
 /telepathy-ytstenut-glib/tests/diddle-account-manager
+/telepathy-ytstenut-glib/tests/client-ping
+/telepathy-ytstenut-glib/tests/client-pong
 
 /docs/reference/xml
 /docs/reference/html

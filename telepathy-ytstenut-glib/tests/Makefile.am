@@ -15,4 +15,6 @@ LDADD = \
 	$(top_builddir)/telepathy-ytstenut-glib/libtelepathy-ytstenut-glib.la
 
 noinst_PROGRAMS = \
-	diddle-account-manager
+	diddle-account-manager \
+	client-pong \
+	client-ping
