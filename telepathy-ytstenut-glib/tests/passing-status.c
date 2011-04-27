@@ -39,11 +39,47 @@ getoutofhere (void)
 }
 
 static gboolean
-timeout_cb (gpointer data)
+leave_timeout_cb (gpointer data)
 {
   g_print ("Let's go!\n");
   g_object_unref (data);
   getoutofhere ();
+  return FALSE;
+}
+
+static void
+advertise_clear_status_cb (GObject *source_object,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpYtsStatus *status = TP_YTS_STATUS (source_object);
+  GError *error = NULL;
+
+  if (!tp_yts_status_advertise_status_finish (status, result, &error))
+    {
+      g_printerr ("Failed to advertise status: %s\n", error->message);
+      getoutofhere ();
+    }
+  else
+    {
+      g_print ("Cleared status fine...\n");
+      g_timeout_add_seconds (3, leave_timeout_cb, status);
+    }
+
+  g_clear_error (&error);
+}
+
+static gboolean
+timeout_cb (gpointer data)
+{
+  TpYtsStatus *status = data;
+
+  g_print ("Clearing status\n");
+
+  tp_yts_status_advertise_status_async (status,
+      "urn:ytstenut:capabilities:yts-caps-cats",
+      "passing.status", /* this should be the same as the client name */
+      NULL, NULL, advertise_clear_status_cb, NULL);
   return FALSE;
 }
 
@@ -63,7 +99,7 @@ advertise_status_cb (GObject *source_object,
   else
     {
       g_print ("Advertised status fine...\n");
-      g_timeout_add_seconds (10, timeout_cb, status);
+      g_timeout_add_seconds (3, timeout_cb, status);
     }
 
   g_clear_error (&error);
@@ -96,7 +132,7 @@ status_ensured_cb (GObject *source_object,
        * status. */
       tp_yts_status_advertise_status_async (status,
           "urn:ytstenut:capabilities:yts-caps-cats",
-          "service.name",
+          "passing.status", /* this should be the same as the client name */
           "<status xmlns='urn:ytstenut:status' from-service='service.name' "
           "capability='urn:ytstenut:capabilities:yts-caps-cats' "
           "activity='looking-at-cats-ooooooh'><look>at how cute they "
