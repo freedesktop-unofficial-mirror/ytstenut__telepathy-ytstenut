@@ -28,10 +28,12 @@
 
 static GMainLoop *loop = NULL;
 static TpYtsAccountManager *am = NULL;
+static TpYtsClient *client = NULL;
 
 static void
 getoutofhere (void)
 {
+  tp_clear_object (&client);
   /* we called Hold in main, so let's let that go here by calling
    * Release */
   tp_yts_account_manager_release (am);
@@ -187,6 +189,14 @@ connection_prepared_cb (GObject *source_object,
     }
   else
     {
+      client = tp_yts_client_new ("nosey.status", account);
+
+      tp_yts_client_add_interests (client,
+          "urn:ytstenut:capabilities:yts-caps-cats",
+          NULL);
+
+      tp_yts_client_register (client, NULL);
+
       tp_yts_status_ensure_for_connection_async (connection,
           NULL, status_ensured_cb, NULL);
     }
@@ -238,7 +248,7 @@ am_get_account_cb (GObject *source_object,
       if (connection != NULL)
         {
           notify_connection_cb (g_object_ref (account), NULL, NULL);
- }
+        }
       else
         {
           g_signal_connect (account, "notify::connection",
