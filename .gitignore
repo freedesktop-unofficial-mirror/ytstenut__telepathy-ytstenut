@@ -49,6 +49,7 @@ tp-glib-tools/telepathy-glib-env
 /telepathy-ytstenut-glib/tests/client-pong
 /telepathy-ytstenut-glib/tests/nosey-status
 /telepathy-ytstenut-glib/tests/passing-service
+/telepathy-ytstenut-glib/tests/passing-status
 
 /docs/reference/xml
 /docs/reference/html

@@ -19,4 +19,5 @@ noinst_PROGRAMS = \
 	client-pong \
 	client-ping \
 	nosey-status \
-	passing-service
+	passing-service \
+	passing-status
