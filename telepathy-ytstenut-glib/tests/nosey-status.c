@@ -104,6 +104,63 @@ service_removed_cb (TpYtsStatus *proxy,
 }
 
 static void
+service_foreach (gpointer key,
+    gpointer value,
+    gpointer data)
+{
+  const gchar *service_name = key;
+  GValueArray *array = value;
+
+  GHashTableIter iter;
+  gpointer one, two;
+
+  const gchar *service_type;
+  GHashTable *names;
+  const gchar * const *capabilities;
+
+  tp_value_array_unpack (array, 3,
+      &service_type,
+      &names,
+      &capabilities);
+
+  g_print ("    - service: %s\n", service_name);
+  g_print ("    - type: %s\n", service_type);
+
+  g_hash_table_iter_init (&iter, names);
+  while (g_hash_table_iter_next (&iter, &one, &two))
+    {
+      g_print ("    - name: %s: %s\n",
+          (const gchar *) one, (const gchar *) two);
+    }
+
+  for (; capabilities != NULL && *capabilities != NULL; capabilities++)
+    {
+      g_print ("    - capability: %s\n", *capabilities);
+    }
+}
+
+static void
+status_foreach (gpointer key,
+    gpointer value,
+    gpointer data)
+{
+  const gchar *capability = key;
+  GHashTable *info = value;
+
+  GHashTableIter iter;
+  gpointer one, two;
+
+  g_print ("    - capability: %s\n", capability);
+
+  g_hash_table_iter_init (&iter, info);
+  while (g_hash_table_iter_next (&iter, &one, &two))
+    {
+      g_print ("    - service: %s\n", (const gchar *) one);
+      g_print ("      - %s\n", (const gchar *) two);
+    }
+}
+
+static void
 status_ensured_cb (GObject *source_object,
     GAsyncResult *result,
     gpointer user_data)
@@ -130,35 +187,35 @@ status_ensured_cb (GObject *source_object,
       hash = tp_yts_status_get_discovered_services (status);
       if (g_hash_table_size (hash) > 0)
         {
-          g_print ("Discovered services:\n");
+          g_print ("Already discovered services:\n");
 
           g_hash_table_iter_init (&iter,
               tp_yts_status_get_discovered_services (status));
           while (g_hash_table_iter_next (&iter, &key, &value))
             {
               const gchar *contact_id = key;
-              /*GHashTable *map = value;*/
+              GHashTable *map = value;
 
-              g_print ("%s:\n", contact_id);
+              g_print (" - %s:\n", contact_id);
 
-              /* TODO: the rest */
+              g_hash_table_foreach (map, service_foreach, NULL);
             }
         }
 
       hash = tp_yts_status_get_discovered_statuses (status);
       if (g_hash_table_size (hash) > 0)
         {
-          g_print ("Discovered statuses:\n");
+          g_print ("Already discovered statuses:\n");
 
           g_hash_table_iter_init (&iter, hash);
           while (g_hash_table_iter_next (&iter, &key, &value))
             {
               const gchar *contact_id = key;
-              /*GHashTable *map = value;*/
+              GHashTable *map = value;
 
-              g_print ("%s:\n", contact_id);
+              g_print (" - %s:\n", contact_id);
 
-              /* TODO: the rest */
+              g_hash_table_foreach (map, status_foreach, NULL);
             }
         }
 
