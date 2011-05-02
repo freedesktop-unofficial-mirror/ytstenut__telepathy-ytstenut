@@ -606,7 +606,11 @@ on_account_timeout (gpointer user_data)
  * @callback: A callback which should be called when the result is ready
  * @user_data: Data to pass to the callback
  *
- * Create a #TpYtsStatus object for a Ytstenut enabled connection.
+ * Create a #TpYtsStatus object for a Ytstenut enabled
+ * connection. @account must be either connected, or in the process of
+ * connecting. Calling tp_yts_account_manager_hold() before this
+ * function (even if haven't re-entered the mainloop yet) is
+ * acceptable for connecting the account.
  */
 void
 tp_yts_status_ensure_async (TpAccount *account,
