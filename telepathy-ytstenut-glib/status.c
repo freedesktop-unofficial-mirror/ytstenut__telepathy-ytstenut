@@ -533,7 +533,7 @@ on_account_notify_connection (GObject *object,
 
   if (connection != NULL)
     {
-      /* TODO: this should be given the cancellable when they're used. */
+      /* TODO: this should be given the cancellable when it's used. */
       _tp_yts_connection_future_ensure_sidecar_async (connection,
           TP_YTS_IFACE_STATUS, NULL,
           on_connection_future_ensure_sidecar_returned, res);
@@ -572,7 +572,7 @@ on_account_notify_changing_presence (GObject *object,
         }
       else
         {
-          /* TODO: this should be given the cancellable when they're used. */
+          /* TODO: this should be given the cancellable when it's used. */
           _tp_yts_connection_future_ensure_sidecar_async (connection,
               TP_YTS_IFACE_STATUS, NULL,
               on_connection_future_ensure_sidecar_returned, data->res);
