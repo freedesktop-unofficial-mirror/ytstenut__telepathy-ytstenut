@@ -53,9 +53,9 @@
  * Ytstenut Status service.
  *
  * Each Ytstenut Status object is associated with a relevant Ytstenut-enabled
- * telepathy connection, represented by a #TpConnection object. To create a new
- * TpYtsStatus object for a given connection use the
- * use tp_yts_status_ensure_for_connection_async() function.
+ * telepathy account, represented by a #TpAccount object. To create a new
+ * #TpYtsStatus object for a given account use the
+ * use tp_yts_status_ensure_async() function.
  *
  * This object automatically keeps track of all the discovered Ytstenut
  * services and their statuses. Use tp_yts_status_get_discovered_statuses()
@@ -520,9 +520,88 @@ on_connection_future_ensure_sidecar_returned (GObject *source_object,
   g_free (object_path);
 }
 
+static void
+on_account_notify_connection (GObject *object,
+    GParamSpec *pspec,
+    gpointer user_data)
+{
+  TpAccount *account = TP_ACCOUNT (object);
+  GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+  TpConnection *connection;
+
+  connection = tp_account_get_connection (account);
+
+  if (connection != NULL)
+    {
+      /* TODO: this should be given the cancellable when they're used. */
+      _tp_yts_connection_future_ensure_sidecar_async (connection,
+          TP_YTS_IFACE_STATUS, NULL,
+          on_connection_future_ensure_sidecar_returned, res);
+    }
+}
+
+typedef struct
+{
+  TpAccount *account;
+  guint source_id;
+  guint handler_id;
+  GSimpleAsyncResult *res;
+} ChangingPresenceData;
+
+static void
+on_account_notify_changing_presence (GObject *object,
+    GParamSpec *pspec,
+    gpointer user_data)
+{
+  TpAccount *account = TP_ACCOUNT (object);
+  ChangingPresenceData *data = user_data;
+  TpConnection *connection;
+
+  if (tp_account_get_changing_presence (account))
+    {
+      g_source_remove (data->source_id);
+      g_signal_handler_disconnect (data->account, data->handler_id);
+
+      connection = tp_account_get_connection (account);
+
+      if (connection == NULL)
+        {
+          /* now just wait for the connection */
+          tp_g_signal_connect_object (account, "notify::connection",
+              G_CALLBACK (on_account_notify_connection), data->res, 0);
+        }
+      else
+        {
+          /* TODO: this should be given the cancellable when they're used. */
+          _tp_yts_connection_future_ensure_sidecar_async (connection,
+              TP_YTS_IFACE_STATUS, NULL,
+              on_connection_future_ensure_sidecar_returned, data->res);
+        }
+
+      g_slice_free (ChangingPresenceData, data);
+    }
+}
+
+static gboolean
+on_account_timeout (gpointer user_data)
+{
+  ChangingPresenceData *data = user_data;
+
+  g_signal_handler_disconnect (data->account, data->handler_id);
+
+  g_simple_async_result_set_error (data->res, TP_ERRORS,
+      TP_ERROR_DISCONNECTED, "The account is not connected");
+  g_simple_async_result_complete (data->res);
+  g_object_unref (data->res);
+
+  g_slice_free (ChangingPresenceData, data);
+
+  return FALSE;
+}
+
 /**
- * tp_yts_status_ensure_for_connection_async:
- * @connection: The Ytstenut enabled connection
+ * tp_yts_status_ensure_async:
+ * @account: The Ytstenut enabled account
  * @cancellable: Not used
  * @callback: A callback which should be called when the result is ready
  * @user_data: Data to pass to the callback
@@ -530,26 +609,55 @@ on_connection_future_ensure_sidecar_returned (GObject *source_object,
  * Create a #TpYtsStatus object for a Ytstenut enabled connection.
  */
 void
-tp_yts_status_ensure_for_connection_async (TpConnection *connection,
+tp_yts_status_ensure_async (TpAccount *account,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
   GSimpleAsyncResult *res;
+  TpConnection *connection;
 
-  g_return_if_fail (TP_IS_CONNECTION (connection));
+  g_return_if_fail (TP_IS_ACCOUNT (account));
 
-  res = g_simple_async_result_new (G_OBJECT (connection), callback, user_data,
-      tp_yts_status_ensure_for_connection_async);
+  connection = tp_account_get_connection (account);
 
-  _tp_yts_connection_future_ensure_sidecar_async (connection,
-      TP_YTS_IFACE_STATUS, cancellable,
-      on_connection_future_ensure_sidecar_returned, res);
+  res = g_simple_async_result_new (G_OBJECT (account), callback, user_data,
+      tp_yts_status_ensure_async);
+
+  if (connection == NULL)
+    {
+      if (tp_account_get_changing_presence (account))
+        {
+          /* just wait for the connection */
+          tp_g_signal_connect_object (account, "notify::connection",
+              G_CALLBACK (on_account_notify_connection), res, 0);
+        }
+      else
+        {
+          /* wait to see if the connection appears */
+          ChangingPresenceData *data = g_slice_new0 (ChangingPresenceData);
+          data->res = res;
+          data->account = account;
+
+          data->source_id = g_timeout_add_seconds (1, on_account_timeout, data);
+
+          data->handler_id = g_signal_connect (account,
+              "notify::changing-presence",
+              G_CALLBACK (on_account_notify_changing_presence),
+              data);
+        }
+    }
+  else
+    {
+      _tp_yts_connection_future_ensure_sidecar_async (connection,
+          TP_YTS_IFACE_STATUS, cancellable,
+          on_connection_future_ensure_sidecar_returned, res);
+    }
 }
 
 /**
- * tp_yts_status_ensure_for_connection_finish:
- * @connection: The Ytstenut enabled connection
+ * tp_yts_status_ensure_finish:
+ * @account: The Ytstenut enabled account
  * @result: The result object passed to the callback
  * @error: If an error occurred, this will be set
  *
@@ -559,21 +667,21 @@ tp_yts_status_ensure_for_connection_async (TpConnection *connection,
  * the Ytstenut Status service. If the operation failed, %NULL will be returned.
  */
 TpYtsStatus *
-tp_yts_status_ensure_for_connection_finish (TpConnection *connection,
+tp_yts_status_ensure_finish (TpAccount *account,
     GAsyncResult *result,
     GError **error)
 {
   GSimpleAsyncResult *res;
 
-  g_return_val_if_fail (TP_IS_CONNECTION (connection), NULL);
-  g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
+  g_return_val_if_fail (TP_IS_ACCOUNT (account), NULL);
+  g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), NULL);
 
   res = G_SIMPLE_ASYNC_RESULT (result);
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-          G_OBJECT (connection), tp_yts_status_ensure_for_connection_async), FALSE);
+          G_OBJECT (account), tp_yts_status_ensure_async), NULL);
 
   if (g_simple_async_result_propagate_error (res, error))
-    return FALSE;
+    return NULL;
 
   return g_object_ref (g_simple_async_result_get_op_res_gpointer (res));
 }

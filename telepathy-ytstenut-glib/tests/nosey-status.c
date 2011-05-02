@@ -168,8 +168,8 @@ status_ensured_cb (GObject *source_object,
   TpYtsStatus *status;
   GError *error = NULL;
 
-  status = tp_yts_status_ensure_for_connection_finish (
-      TP_CONNECTION (source_object), result, &error);
+  status = tp_yts_status_ensure_finish (
+      TP_ACCOUNT (source_object), result, &error);
 
   if (status == NULL)
     {
@@ -231,58 +231,6 @@ status_ensured_cb (GObject *source_object,
 }
 
 static void
-connection_prepared_cb (GObject *source_object,
-    GAsyncResult *result,
-    gpointer user_data)
-{
-  TpConnection *connection = TP_CONNECTION (source_object);
-  TpAccount *account = user_data;
-  GError *error = NULL;
-
-  if (!tp_proxy_prepare_finish (source_object, result, &error))
-    {
-      g_printerr ("Failed to prepare connection: %s\n", error->message);
-      getoutofhere ();
-    }
-  else
-    {
-      client = tp_yts_client_new ("nosey.status", account);
-
-      tp_yts_client_add_interests (client,
-          "urn:ytstenut:capabilities:yts-caps-cats",
-          NULL);
-
-      tp_yts_client_register (client, NULL);
-
-      tp_yts_status_ensure_for_connection_async (connection,
-          NULL, status_ensured_cb, NULL);
-    }
-
-  g_object_unref (account);
-  g_clear_error (&error);
-}
-
-static void
-notify_connection_cb (GObject *gobject,
-    GParamSpec *pspec,
-    gpointer user_data)
-{
-  TpAccount *account = TP_ACCOUNT (gobject);
-  GQuark features[] = { TP_CONNECTION_FEATURE_CONNECTED, 0 };
-  TpConnection *connection = tp_account_get_connection (account);
-
-  if (connection == NULL)
-    return;
-
-  g_print ("Trying to prepare account, this will only continue "
-      "if the account is connected...\n");
-
-  /* account already reffed */
-  tp_proxy_prepare_async (connection, features, connection_prepared_cb,
-      account);
-}
-
-static void
 am_get_account_cb (GObject *source_object,
     GAsyncResult *result,
     gpointer user_data)
@@ -298,19 +246,16 @@ am_get_account_cb (GObject *source_object,
     }
   else
     {
-      /* We got the account fine, but we need to ensure some features
-       * on it so we have the :self-contact property set. */
-      TpConnection *connection = tp_account_get_connection (account);
+      client = tp_yts_client_new ("nosey.status", account);
 
-      if (connection != NULL)
-        {
-          notify_connection_cb (g_object_ref (account), NULL, NULL);
-        }
-      else
-        {
-          g_signal_connect (account, "notify::connection",
-              G_CALLBACK (notify_connection_cb), g_object_ref (account));
-        }
+      tp_yts_client_add_interests (client,
+          "urn:ytstenut:capabilities:yts-caps-cats",
+          NULL);
+
+      tp_yts_client_register (client, NULL);
+
+      tp_yts_status_ensure_async (account,
+          NULL, status_ensured_cb, NULL);
     }
 
   g_object_unref (account);

@@ -48,8 +48,8 @@ TP_YTS_SVC_ACCOUNT_MANAGER_GET_CLASS
 <FILE>status</FILE>
 TpYtsStatus
 TpYtsStatusClass
-tp_yts_status_ensure_for_connection_async
-tp_yts_status_ensure_for_connection_finish
+tp_yts_status_ensure_async
+tp_yts_status_ensure_finish
 tp_yts_status_get_discovered_services
 tp_yts_status_get_discovered_statuses
 tp_yts_status_advertise_status_async

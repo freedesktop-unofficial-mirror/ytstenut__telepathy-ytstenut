@@ -21,7 +21,7 @@
 #ifndef TP_YTS_STATUS_H
 #define TP_YTS_STATUS_H
 
-#include <telepathy-glib/connection.h>
+#include <telepathy-glib/account.h>
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/defs.h>
 #include <telepathy-glib/proxy.h>
@@ -58,12 +58,12 @@ GType tp_yts_status_get_type (void);
 #define TP_YTS_STATUS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), \
     TP_TYPE_YTS_STATUS, TpYtsStatusClass))
 
-void tp_yts_status_ensure_for_connection_async (TpConnection *connection,
+void tp_yts_status_ensure_async (TpAccount *account,
     GCancellable *cancellable, GAsyncReadyCallback callback,
     gpointer user_data);
 
-TpYtsStatus *tp_yts_status_ensure_for_connection_finish (
-    TpConnection *connection, GAsyncResult *result, GError **error);
+TpYtsStatus *tp_yts_status_ensure_finish (
+    TpAccount *account, GAsyncResult *result, GError **error);
 
 void tp_yts_status_advertise_status_async (TpYtsStatus *self,
     const gchar *capability, const gchar *service_name, const gchar *status_xml,
