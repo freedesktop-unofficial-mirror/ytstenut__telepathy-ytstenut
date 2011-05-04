@@ -225,6 +225,15 @@ status_ensured_cb (GObject *source_object,
           NULL, NULL, NULL, NULL);
       tp_yts_status_connect_to_service_removed (status, service_removed_cb,
           NULL, NULL, NULL, NULL);
+
+      /* or you could use the GObject signals:
+      g_signal_connect (status, "status-changed",
+          G_CALLBACK (status_changed_cb), NULL);
+      g_signal_connect (status, "service-added",
+          G_CALLBACK (service_added_cb), NULL);
+      g_signal_connect (status, "service-removed",
+          G_CALLBACK (service_removed_cb), NULL);
+      */
     }
 
   g_clear_error (&error);

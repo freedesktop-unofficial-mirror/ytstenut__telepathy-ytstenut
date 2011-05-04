@@ -82,6 +82,15 @@
  */
 
 enum {
+  SERVICE_ADDED,
+  SERVICE_REMOVED,
+  STATUS_CHANGED,
+  LAST_SIGNAL
+};
+
+static gint signals[LAST_SIGNAL] = { 0, };
+
+enum {
   PROP_0,
   PROP_DISCOVERED_SERVICES,
   PROP_DISCOVERED_STATUSES,
@@ -161,6 +170,9 @@ on_status_changed (TpYtsStatus *self,
     }
 
   g_object_notify (G_OBJECT (self), "discovered-statuses");
+
+  g_signal_emit (self, signals[STATUS_CHANGED], 0,
+      contact_id, capability, service_name, status);
 }
 
 static void
@@ -189,6 +201,9 @@ on_service_added (TpYtsStatus *self,
       g_value_array_copy (service));
 
   g_object_notify (G_OBJECT (self), "discovered-services");
+
+  g_signal_emit (self, signals[SERVICE_ADDED], 0,
+      contact_id, service_name, service);
 }
 
 static void
@@ -212,6 +227,9 @@ on_service_removed (TpYtsStatus *self,
     g_hash_table_remove (self->priv->discovered_services, contact_id);
 
   g_object_notify (G_OBJECT (self), "discovered-services");
+
+  g_signal_emit (self, signals[SERVICE_REMOVED], 0,
+      contact_id, service_name);
 }
 
 static void
@@ -387,6 +405,84 @@ tp_yts_status_class_init (TpYtsStatusClass *klass)
           "Discovered Ytstenut Status Information",
           TP_YTS_HASH_TYPE_CONTACT_CAPABILITY_MAP,
           G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * TpYtsStatus::service-added:
+   * @status: the #TpYtsStatus
+   * @contact_id: The contact for the device on which a service was added.
+   * @service_name: The name of the service which was added.
+   * @service: Details of the service added.
+   *
+   * This signal is emitted when we discover that a Ytstenut service
+   * has been advertised by a contact. The
+   * #TpYtsStatus:discovered-services property will have been updated
+   * before this signal is emitted.
+   *
+   * @service is a #GValueArray like this:
+   *
+   *
+   * <code><literallayout>
+   *    GValueArray (
+   *        gchar *service_type,
+   *            GHashTable (
+   *                gchar *language,
+   *                gchar *localized_name
+   *            )
+   *            gchar **capabilities
+   *        )
+   * </literallayout></code>
+   */
+  signals[SERVICE_ADDED] =
+    g_signal_new ("service-added",
+      G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, 0,
+      NULL, NULL,
+      _tp_yts_marshal_VOID__STRING_STRING_BOXED,
+      G_TYPE_NONE,
+      3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_VALUE_ARRAY);
+
+  /**
+   * TpYtsStatus::service-removed:
+   * @status: a #TpYtsStatus
+   * @contact_id: The contact for the device on which a service was removed.
+   * @service_name: The name of the service which was removed.
+   *
+   * This signal is emitted when we discover that a Ytstenut service
+   * has been removed by a Contact. The
+   * #TpYtsStatus:discovered-services property will have been updated
+   * before this signal is emitted.
+   */
+  signals[SERVICE_REMOVED] =
+    g_signal_new ("service_removed",
+      G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, 0,
+      NULL, NULL,
+      _tp_yts_marshal_VOID__STRING_STRING,
+      G_TYPE_NONE,
+      2, G_TYPE_STRING, G_TYPE_STRING);
+
+  /**
+   * TpYtsStatus::status-changed:
+   * @status: a #TpYtsStatus
+   * @contact_id: The contact for the device on which the status changed.
+   * @capability: The capability for which the status changed.
+   * @service_name: The name of the service whose status changed.
+   * @status: The UTF-8 encoded XML Ytstetus status, or a empty string
+   *   if the status was cleared.
+   *
+   * This signal is emitted when we discover that a Ytstenut service
+   * has changed or cleared its status on one one of the devices on
+   * the local network. The #TpYtsStatus:discovered-statuses property
+   * will have been updated before this signal is emitted.
+   */
+  signals[STATUS_CHANGED] =
+    g_signal_new ("status-changed",
+      G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, 0,
+      NULL, NULL,
+      _tp_yts_marshal_VOID__STRING_STRING_STRING_STRING,
+      G_TYPE_NONE,
+      4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
   tp_proxy_init_known_interfaces ();
   tp_proxy_or_subclass_hook_on_interface_add (tp_type,
