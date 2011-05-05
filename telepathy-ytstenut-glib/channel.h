@@ -87,6 +87,12 @@ void tp_yts_channel_fail_async (TpYtsChannel *self,
 gboolean tp_yts_channel_fail_finish (TpYtsChannel *self,
     GAsyncResult *result, GError **error);
 
+TpYtsRequestType tp_yts_channel_get_request_type (TpYtsChannel *self);
+GHashTable * tp_yts_channel_get_request_attributes (TpYtsChannel *self);
+const gchar * tp_yts_channel_get_request_body (TpYtsChannel *self);
+const gchar * tp_yts_channel_get_target_service (TpYtsChannel *self);
+const gchar * tp_yts_channel_get_initiator_service (TpYtsChannel *self);
+
 G_END_DECLS
 
 #include <telepathy-ytstenut-glib/_gen/cli-channel.h>

@@ -71,6 +71,17 @@ received_channels (TpYtsClient *client,
       GHashTable *tmp = g_hash_table_new (g_str_hash, g_str_equal);
       g_hash_table_insert (tmp, "nyan", "cat");
 
+      g_print ("request type: %u\n",
+          tp_yts_channel_get_request_type (channel));
+      g_print ("request attributes: %p\n",
+          tp_yts_channel_get_request_attributes (channel));
+      g_print ("request body: %s\n",
+          tp_yts_channel_get_request_body (channel));
+      g_print ("target service: %s\n",
+          tp_yts_channel_get_target_service (channel));
+      g_print ("initiator service: %s\n",
+          tp_yts_channel_get_initiator_service (channel));
+
       /* Call Reply() */
       tp_yts_channel_reply_async (channel, tmp, NULL,
           NULL, reply_cb, NULL);

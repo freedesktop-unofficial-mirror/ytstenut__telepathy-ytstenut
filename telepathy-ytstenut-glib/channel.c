@@ -72,27 +72,195 @@
  * The class of a #TpYtsChannel.
  */
 
+/* properties */
+enum {
+  PROP_0,
+  PROP_REQUEST_TYPE,
+  PROP_REQUEST_ATTRIBUTES,
+  PROP_REQUEST_BODY,
+  PROP_TARGET_SERVICE,
+  PROP_INITIATOR_SERVICE,
+};
+
+struct _TpYtsChannelPrivate
+{
+  TpYtsRequestType request_type;
+  GHashTable *request_attributes;
+  gchar *request_body;
+  gchar *target_service;
+  gchar *initiator_service;
+};
+
 G_DEFINE_TYPE (TpYtsChannel, tp_yts_channel, TP_TYPE_CHANNEL);
 
 static void
 tp_yts_channel_init (TpYtsChannel *self)
 {
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, TP_TYPE_YTS_CHANNEL,
+      TpYtsChannelPrivate);
+}
 
+static void
+tp_yts_channel_constructed (GObject *object)
+{
+  TpYtsChannel *self = TP_YTS_CHANNEL (object);
+  TpYtsChannelPrivate *priv = self->priv;
+  GHashTable *props;
+
+  g_object_get (object,
+      "channel-properties", &props,
+      NULL);
+
+  /* RequestType */
+  priv->request_type = tp_asv_get_uint32 (props,
+      TP_YTS_IFACE_CHANNEL ".RequestType", NULL);
+
+  /* RequestAttributes */
+  priv->request_attributes = tp_asv_get_boxed (props,
+          TP_YTS_IFACE_CHANNEL ".RequestAttributes",
+          TP_HASH_TYPE_STRING_STRING_MAP);
+
+  /* only ref it if we get one out */
+  if (priv->request_attributes != NULL)
+    g_hash_table_ref (priv->request_attributes);
+
+  /* RequestBody */
+  priv->request_body = g_strdup (tp_asv_get_string (props,
+          TP_YTS_IFACE_CHANNEL ".RequestBody"));
+
+  /* TargetService */
+  priv->target_service = g_strdup (tp_asv_get_string (props,
+          TP_YTS_IFACE_CHANNEL ".TargetService"));
+
+  /* InitiatorService */
+  priv->initiator_service = g_strdup (tp_asv_get_string (props,
+          TP_YTS_IFACE_CHANNEL ".InitiatorService"));
+
+  g_hash_table_unref (props);
+
+  if (G_OBJECT_CLASS (tp_yts_channel_parent_class)->constructed != NULL)
+    G_OBJECT_CLASS (tp_yts_channel_parent_class)->constructed (object);
+}
+
+static void
+tp_yts_channel_finalize (GObject *object)
+{
+  TpYtsChannel *self = TP_YTS_CHANNEL (object);
+  TpYtsChannelPrivate *priv = self->priv;
+
+  tp_clear_pointer (&priv->request_attributes, g_hash_table_unref);
+  tp_clear_pointer (&priv->request_body, g_free);
+  tp_clear_pointer (&priv->target_service, g_free);
+  tp_clear_pointer (&priv->initiator_service, g_free);
+
+  if (G_OBJECT_CLASS (tp_yts_channel_parent_class)->finalize != NULL)
+    G_OBJECT_CLASS (tp_yts_channel_parent_class)->finalize (object);
+}
+
+static void
+tp_yts_channel_get_property (GObject *object,
+    guint property_id,
+    GValue *value,
+    GParamSpec *pspec)
+{
+  TpYtsChannel *self = TP_YTS_CHANNEL (object);
+
+  switch (property_id)
+    {
+      case PROP_REQUEST_TYPE:
+        g_value_set_uint (value, self->priv->request_type);
+        break;
+      case PROP_REQUEST_ATTRIBUTES:
+        g_value_set_boxed (value, self->priv->request_attributes);
+        break;
+      case PROP_REQUEST_BODY:
+        g_value_set_string (value, self->priv->request_body);
+        break;
+      case PROP_TARGET_SERVICE:
+        g_value_set_string (value, self->priv->target_service);
+        break;
+      case PROP_INITIATOR_SERVICE:
+        g_value_set_string (value, self->priv->initiator_service);
+        break;
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        break;
+    }
 }
 
 static void
 tp_yts_channel_class_init (TpYtsChannelClass *klass)
 {
+  GObjectClass *object_class = (GObjectClass *) klass;
   TpProxyClass *proxy_class = (TpProxyClass *) klass;
   GType tp_type = TP_TYPE_YTS_CHANNEL;
 
+  object_class->constructed = tp_yts_channel_constructed;
+  object_class->finalize = tp_yts_channel_finalize;
+  object_class->get_property = tp_yts_channel_get_property;
+
   proxy_class->interface = TP_YTS_IFACE_QUARK_CHANNEL;
+
+  g_type_class_add_private (klass, sizeof (TpYtsChannelPrivate));
 
   tp_proxy_init_known_interfaces ();
   tp_proxy_or_subclass_hook_on_interface_add (tp_type,
       tp_yts_channel_add_signals);
   tp_proxy_subclass_add_error_mapping (tp_type,
       TP_ERROR_PREFIX, TP_ERRORS, TP_TYPE_ERROR);
+
+  /**
+   * TpYtsChannel:request-type:
+   *
+   * The IQ type of the request message.
+   */
+  g_object_class_install_property (object_class, PROP_REQUEST_TYPE,
+      g_param_spec_uint ("request-type", "Request type",
+          "Ytstenut Request Type", 0, NUM_TP_YTS_REQUEST_TYPES, 0,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * TpYtsChannel:request-attributes:
+   *
+   * The attributes present on the Ytstenut request message.
+   */
+  g_object_class_install_property (object_class, PROP_REQUEST_ATTRIBUTES,
+      g_param_spec_boxed ("request-attributes", "Request attributes",
+          "Ytstenut Request Attributes",
+          TP_HASH_TYPE_STRING_STRING_MAP,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * TpYtsChannel:request-body:
+   *
+   * The UTF-8 encoded XML body of the Ytstenut request message.
+   */
+  g_object_class_install_property (object_class, PROP_REQUEST_BODY,
+      g_param_spec_string ("request-body", "Request body",
+          "Ytstenut Request Body", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * TpYtsChannel:target-service:
+   *
+   * The name of the target Ytstenut service that this channel is
+   * targetted at.
+   */
+  g_object_class_install_property (object_class, PROP_TARGET_SERVICE,
+      g_param_spec_string ("target-service", "Target service",
+          "Ytstenut Target Service", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * TpYtsChannel:initiator-service:
+   *
+   * The name of the Ytstenut service which initiated this channel.
+   */
+  g_object_class_install_property (object_class, PROP_INITIATOR_SERVICE,
+      g_param_spec_string ("initiator-service", "Initiator service",
+          "Ytstenut Initiator Service", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 }
 
 /**
@@ -382,4 +550,106 @@ tp_yts_channel_fail_finish (TpYtsChannel *self,
     return FALSE;
 
   return TRUE;
+}
+
+/**
+ * tp_yts_channel_get_request_type:
+ * @self: a #TpYtsChannel
+ *
+ * <!-- -->
+ *
+ * Returns: the same as the #TpYtsChannel:request-type property
+ */
+TpYtsRequestType
+tp_yts_channel_get_request_type (TpYtsChannel *self)
+{
+  TpYtsChannelPrivate *priv;
+
+  g_return_val_if_fail (TP_IS_YTS_CHANNEL (self), 0);
+
+  priv = self->priv;
+
+  return priv->request_type;
+}
+
+/**
+ * tp_yts_channel_get_request_attributes:
+ * @self: a #TpYtsChannel
+ *
+ * <!-- -->
+ *
+ * Returns: the same as the #TpYtsChannel:request-attributes property,
+ *   use g_hash_table_ref() to keep a reference to the returned hash
+ *   table
+ */
+GHashTable *
+tp_yts_channel_get_request_attributes (TpYtsChannel *self)
+{
+  TpYtsChannelPrivate *priv;
+
+  g_return_val_if_fail (TP_IS_YTS_CHANNEL (self), NULL);
+
+  priv = self->priv;
+
+  return priv->request_attributes;
+}
+
+/**
+ * tp_yts_channel_get_request_body:
+ * @self: a #TpYtsChannel
+ *
+ * <!-- -->
+ *
+ * Returns: the same as the #TpYtsChannel:request-body property
+ */
+const gchar *
+tp_yts_channel_get_request_body (TpYtsChannel *self)
+{
+  TpYtsChannelPrivate *priv;
+
+  g_return_val_if_fail (TP_IS_YTS_CHANNEL (self), NULL);
+
+  priv = self->priv;
+
+  return priv->request_body;
+}
+
+/**
+ * tp_yts_channel_get_target_service:
+ * @self: a #TpYtsChannel
+ *
+ * <!-- -->
+ *
+ * Returns: the same as the #TpYtsChannel:target-service property
+ */
+const gchar *
+tp_yts_channel_get_target_service (TpYtsChannel *self)
+{
+  TpYtsChannelPrivate *priv;
+
+  g_return_val_if_fail (TP_IS_YTS_CHANNEL (self), NULL);
+
+  priv = self->priv;
+
+  return priv->target_service;
+}
+
+/**
+ * tp_yts_channel_get_initiator-service:
+ * @self: a #TpYtsChannel
+ *
+ * <!-- -->
+ *
+ * Returns: the same as the #TpYtsChannel:initiator-service property
+ */
+const gchar *
+tp_yts_channel_get_initiator_service (TpYtsChannel *self)
+{
+  TpYtsChannelPrivate *priv;
+
+  g_return_val_if_fail (TP_IS_YTS_CHANNEL (self), 0);
+
+  priv = self->priv;
+
+  return priv->initiator_service;
 }
