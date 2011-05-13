@@ -27,3 +27,26 @@ noinst_PROGRAMS = \
 	server-passing-service \
 	server-passing-status \
 	server-file-transfer
+
+Android.mk: Makefile.am
+	androgenizer -:PROJECT telepathy-ytstenut-glib \
+	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:EXECUTABLE nosey-status -:TAGS eng debug \
+	 -:SOURCES nosey-status.c \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(AM_LDFLAGS) $(LDADD) libfuture-extensions.la \
+	 -:EXECUTABLE passing-service -:TAGS eng debug \
+	 -:SOURCES passing-service.c \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(AM_LDFLAGS) $(LDADD) libfuture-extensions.la \
+	 -:EXECUTABLE passing-status -:TAGS eng debug \
+	 -:SOURCES passing-status.c \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(AM_LDFLAGS) $(LDADD) libfuture-extensions.la \
+	> $@

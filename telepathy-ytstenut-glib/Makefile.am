@@ -170,3 +170,15 @@ _gen/register-dbus-glib-marshallers-body.h: _gen/all.xml \
 	$(tools_dir)/glib-client-marshaller-gen.py Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-client-marshaller-gen.py $< _tp_yts > $@
 
+Android.mk: Makefile.am $(BUILT_SOURCES)
+	androgenizer -:PROJECT telepathy-ytstenut \
+	 -:SHARED telepathy-ytstenut-glib \
+	 -:TAGS eng debug \
+	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(libtelepathy_ytstenut_glib_la_SOURCES) \
+	           $(nodist_libtelepathy_ytstenut_glib_la_SOURCES) \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(AM_LDFLAGS) $(libtelepathy_ytstenut_glib_la_LIBADD) \
+	> $@

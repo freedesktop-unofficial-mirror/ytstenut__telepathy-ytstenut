@@ -68,3 +68,15 @@ _gen/cli-connection-future-body.h _gen/cli-connection-future.h: _gen/all.xml \
 		--iface-quark-prefix=_TP_YTS_IFACE_QUARK \
 		--tp-proxy-api=0.7.6 \
 		$< _Tp_Yts_Cli _gen/cli-connection-future
+
+Android.mk: Makefile.am $(BUILT_SOURCES)
+	androgenizer -:PROJECT telepathy-ytstenut \
+	 -:SHARED future-extensions -:TAGS eng debug \
+	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(libfuture_extensions_la_SOURCES) \
+	  $(nodist_libfuture_extensions_la_SOURCES) \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(AM_LDFLAGS) $(libfuture_extensions_la_LIBADD) \
+	> $@
