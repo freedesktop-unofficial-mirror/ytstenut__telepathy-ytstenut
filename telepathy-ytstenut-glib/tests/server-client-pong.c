@@ -127,6 +127,7 @@ main (int argc,
     char **argv)
 {
   TpDBusDaemon *dbus;
+  TpYtsAccountManager *am;
   TpAccount *account;
   gchar *path;
 
@@ -141,8 +142,10 @@ main (int argc,
 
   dbus = tp_dbus_daemon_dup (NULL);
 
+  am = tp_yts_account_manager_dup ();
+
   path = g_strdup_printf ("%s%s", TP_ACCOUNT_OBJECT_PATH_BASE, argv[1]);
-  account = tp_account_new (dbus, path, NULL);
+  account = tp_yts_account_manager_ensure_account (am, path, NULL);
   g_free (path);
 
   tp_account_prepare_async (account, NULL, account_prepared_cb, argv[2]);
@@ -153,6 +156,7 @@ main (int argc,
   g_main_loop_unref (loop);
 
   g_object_unref (account);
+  g_object_unref (am);
   g_object_unref (dbus);
 
   return 0;
