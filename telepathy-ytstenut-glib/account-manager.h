@@ -29,7 +29,7 @@
 G_BEGIN_DECLS
 
 #define TP_YTS_ACCOUNT_MANAGER_OBJECT_PATH \
-    "/com/meego/xpmn/ytstenut/AccountManager"
+    "/org/freedesktop/ytstenut/xpmn/AccountManager"
 
 typedef struct _TpYtsAccountManager TpYtsAccountManager;
 typedef struct _TpYtsAccountManagerClass TpYtsAccountManagerClass;

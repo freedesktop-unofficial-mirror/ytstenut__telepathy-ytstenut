@@ -16,7 +16,7 @@ Lesser General Public License for more details.</p>
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</p>
   </tp:license>
-  <interface name="com.meego.xpmn.ytstenut.AccountManager">
+  <interface name="org.freedesktop.ytstenut.xpmn.AccountManager">
 
     <property name="Account" access="read" tp:name-for-bindings="Account"
       type="o" tp:immutable='yes'>
@@ -43,7 +43,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</
 
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
       <p>This interface is provided by the account manager at the path
-        <tt>/com/meego/xpmn/ytstenut/AccountManager</tt>.</p>
+        <tt>/org/freedesktop/ytstenut/xpmn/AccountManager</tt>.</p>
 
       <p>This account manager interface is used to discover the
         ytstenut account.  This account is created automatically and
