@@ -169,6 +169,22 @@ TP_IS_YTS_CHANNEL_FACTORY_CLASS
 </SECTION>
 
 <SECTION>
+<FILE>client-factory</FILE>
+tp_yts_client_factory_new
+TpYtsClientFactory
+TpYtsClientFactoryClass
+<SUBSECTION Standard>
+tp_yts_client_factory_get_type
+TpYtsClientFactoryPrivate
+TP_YTS_CLIENT_FACTORY
+TP_YTS_CLIENT_FACTORY_CLASS
+TP_YTS_CLIENT_FACTORY_GET_CLASS
+TP_TYPE_YTS_CLIENT_FACTORY
+TP_IS_YTS_CLIENT_FACTORY
+TP_IS_YTS_CLIENT_FACTORY_CLASS
+</SECTION>
+
+<SECTION>
 <FILE>svc-channel</FILE>
 TpYtsSvcChannel
 TpYtsSvcChannelClass
