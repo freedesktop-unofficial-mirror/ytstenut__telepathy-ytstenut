@@ -22,7 +22,6 @@
 
 #include "client.h"
 #include "channel.h"
-#include "channel-factory.h"
 
 #include <telepathy-glib/account-channel-request.h>
 #include <telepathy-glib/contact.h>
@@ -82,7 +81,6 @@ static gint signals[LAST_SIGNAL] = { 0, };
 struct _TpYtsClientPrivate {
   gchar *service_name;
   TpAccount *account;
-  TpClientChannelFactory *factory;
   GQueue incoming_channels;
 };
 
@@ -120,7 +118,6 @@ tp_yts_client_init (TpYtsClient *self)
       TpYtsClientPrivate);
 
   g_queue_init (&self->priv->incoming_channels);
-  self->priv->factory = tp_yts_channel_factory_new ();
 }
 
 static void
@@ -133,8 +130,6 @@ tp_yts_client_constructed (GObject *obj)
   G_OBJECT_CLASS (tp_yts_client_parent_class)->constructed (obj);
 
   _tp_yts_register_dbus_glib_marshallers ();
-
-  tp_base_client_set_channel_factory (client, self->priv->factory);
 
   tp_base_client_set_handler_bypass_approval (client, FALSE);
 
@@ -214,8 +209,6 @@ tp_yts_client_dispose (GObject *object)
 {
   TpYtsClient *self = TP_YTS_CLIENT (object);
   TpChannel *channel;
-
-  tp_clear_object (&self->priv->factory);
 
   while (!g_queue_is_empty (&self->priv->incoming_channels))
     {
@@ -666,9 +659,6 @@ tp_yts_client_request_channel_async (TpYtsClient *self,
 
   channel_request = tp_account_channel_request_new (self->priv->account,
       request_properties, 0);
-
-  tp_account_channel_request_set_channel_factory (channel_request,
-      self->priv->factory);
 
   tp_account_channel_request_create_and_handle_channel_async (channel_request,
       cancellable, on_channel_request_create_and_handle_channel_returned, res);
