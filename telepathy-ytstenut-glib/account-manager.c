@@ -209,6 +209,35 @@ tp_yts_account_manager_dup (void)
   return starter_account_manager_proxy;
 }
 
+/**
+ * tp_yts_account_manager_ensure_account:
+ * @self: a #TpYtsAccountManager
+ * @path: the account object path
+ * @error: a #GError to fill when an error is encountered
+ *
+ * Using the #TpYtsAccountManager ensure an account with object path
+ * @path. This should be used instead of tp_account_new() as it means
+ * the #TpYtsClientFactory will be propagated through to the new
+ * account and so new channel objects will be turned into
+ * #TpYtsChannel<!-- -->s.
+ *
+ * Returns: a #TpAccount
+ */
+TpAccount *
+tp_yts_account_manager_ensure_account (TpYtsAccountManager *self,
+    const gchar *path,
+    GError **error)
+{
+  TpSimpleClientFactory *factory;
+
+  g_return_val_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (self), NULL);
+  g_return_val_if_fail (!tp_str_empty (path), NULL);
+
+  factory = tp_proxy_get_factory (self->priv->account_manager);
+
+  return tp_simple_client_factory_ensure_account (factory, path, NULL, error);
+}
+
 static void
 on_account_prepared (GObject *source,
     GAsyncResult *result,

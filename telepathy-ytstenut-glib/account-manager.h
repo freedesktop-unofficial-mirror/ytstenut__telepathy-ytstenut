@@ -71,6 +71,9 @@ TpYtsAccountManager *tp_yts_account_manager_new (TpDBusDaemon *bus_daemon)
 TpYtsAccountManager *tp_yts_account_manager_dup (void)
     G_GNUC_WARN_UNUSED_RESULT;
 
+TpAccount *tp_yts_account_manager_ensure_account (TpYtsAccountManager *self,
+    const gchar *path, GError **error);
+
 void tp_yts_account_manager_get_account_async (TpYtsAccountManager *self,
     GCancellable *cancellable, GAsyncReadyCallback callback,
     gpointer user_data);
