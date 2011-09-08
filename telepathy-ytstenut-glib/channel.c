@@ -270,16 +270,46 @@ tp_yts_channel_class_init (TpYtsChannelClass *klass)
  * @immutable_properties: The immutable properties of the channel.
  * @error: If not %NULL, used to raise an error when %NULL is returned.
  *
+ * The same as tp_yts_channel_with_factory() but without the client
+ * factory.
+ *
+ * This function should not be used. tp_yts_channel_with_factory()
+ * should be used with an appropriate client factory.
+ *
+ * Returns: A newly allocated #TpYtsChannel object.
+ */
+TpChannel *
+tp_yts_channel_new_from_properties (TpConnection *conn,
+    const gchar *object_path,
+    GHashTable *immutable_properties,
+    GError **error)
+{
+  return tp_yts_channel_new_with_factory (NULL, conn, object_path,
+      immutable_properties, error);
+}
+
+/**
+ * tp_yts_channel_new_with_factory:
+ * @factory: a #TpSimpleClientFactory
+ * @conn: The telepathy connection
+ * @object_path: The DBus object path of the channel.
+ * @immutable_properties: The immutable properties of the channel.
+ * @error: If not %NULL, used to raise an error when %NULL is returned.
+ *
  * Create a new #TpYtsChannel proxy object for a channel that exists in the
  * Ytstenut DBus implementation.
  *
  * In order to request a new outgoing channel use
  * tp_yts_client_request_channel_async() instead of this function.
  *
+ * Note that this function should only be called for incoming channels
+ * by the client factory, @factory.
+ *
  * Returns: A newly allocated #TpYtsChannel object.
  */
 TpChannel *
-tp_yts_channel_new_from_properties (TpConnection *conn,
+tp_yts_channel_new_with_factory (TpSimpleClientFactory *factory,
+    TpConnection *conn,
     const gchar *object_path,
     GHashTable *immutable_properties,
     GError **error)
@@ -301,6 +331,7 @@ tp_yts_channel_new_from_properties (TpConnection *conn,
         "object-path", object_path,
         "handle-type", (guint) TP_UNKNOWN_HANDLE_TYPE,
         "channel-properties", immutable_properties,
+        "factory", factory,
         NULL));
 
 finally:

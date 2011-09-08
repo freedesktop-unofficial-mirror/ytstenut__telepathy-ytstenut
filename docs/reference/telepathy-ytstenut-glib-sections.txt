@@ -111,6 +111,7 @@ TP_YTS_SVC_STATUS_GET_CLASS
 TpYtsChannel
 TpYtsChannelClass
 tp_yts_channel_new_from_properties
+tp_yts_channel_new_with_factory
 tp_yts_channel_request_async
 tp_yts_channel_request_finish
 tp_yts_channel_reply_async
