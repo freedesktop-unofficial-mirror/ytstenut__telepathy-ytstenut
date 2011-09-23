@@ -283,12 +283,11 @@ int
 main (int argc,
     char **argv)
 {
-  TpDBusDaemon *dbus;
   TpYtsAccountManager *am;
   TpAccount *account;
   gchar *path;
 
-  if (argv[1] == NULL || argv[2] == NULL || argv[3] == NULL || argv[4] == NULL
+  if (argc < 5
       || !tp_dbus_check_valid_interface_name (argv[3], NULL)
       || !tp_dbus_check_valid_interface_name (argv[4], NULL))
     {
@@ -301,8 +300,6 @@ main (int argc,
   contact_id = argv[2];
   local_service = argv[3];
   remote_service = argv[4];
-
-  dbus = tp_dbus_daemon_dup (NULL);
 
   am = tp_yts_account_manager_dup ();
 
@@ -319,7 +316,6 @@ main (int argc,
 
   g_object_unref (account);
   g_object_unref (am);
-  g_object_unref (dbus);
 
   return 0;
 }

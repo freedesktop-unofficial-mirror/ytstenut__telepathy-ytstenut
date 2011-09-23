@@ -126,12 +126,11 @@ int
 main (int argc,
     char **argv)
 {
-  TpDBusDaemon *dbus;
   TpYtsAccountManager *am;
   TpAccount *account;
   gchar *path;
 
-  if (argv[1] == NULL || argv[2] == NULL
+  if (argc < 3
       || !tp_dbus_check_valid_interface_name (argv[2], NULL))
     {
       g_print ("usage: %s [account] [service name]\n", argv[0]);
@@ -139,8 +138,6 @@ main (int argc,
     }
 
   g_type_init ();
-
-  dbus = tp_dbus_daemon_dup (NULL);
 
   am = tp_yts_account_manager_dup ();
 
@@ -157,7 +154,6 @@ main (int argc,
 
   g_object_unref (account);
   g_object_unref (am);
-  g_object_unref (dbus);
 
   return 0;
 }
