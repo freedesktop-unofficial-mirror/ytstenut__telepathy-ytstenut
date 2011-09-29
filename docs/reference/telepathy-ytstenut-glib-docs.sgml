@@ -17,6 +17,7 @@
     <title>Using Ytstenut Objects</title>
     <xi:include href="xml/account-manager.xml"/>
     <xi:include href="xml/channel.xml"/>
+    <xi:include href="xml/client-factory.xml"/>
     <xi:include href="xml/channel-factory.xml"/>
     <xi:include href="xml/client.xml"/>
     <xi:include href="xml/status.xml"/>

@@ -16,6 +16,8 @@ libtelepathy_ytstenut_glib_la_SOURCES = \
     channel.h \
     channel-factory.c \
     channel-factory.h \
+    client-factory.c \
+    client-factory.h \
     client.c \
     client.h \
     generated.h \

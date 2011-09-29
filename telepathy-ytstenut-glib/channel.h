@@ -27,6 +27,7 @@
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/defs.h>
 #include <telepathy-glib/proxy.h>
+#include <telepathy-glib/simple-client-factory.h>
 
 G_BEGIN_DECLS
 
@@ -62,6 +63,10 @@ GType tp_yts_channel_get_type (void);
 
 TpChannel *tp_yts_channel_new_from_properties (TpConnection *conn,
     const gchar *object_path, GHashTable *immutable_properties, GError **error);
+
+TpChannel *tp_yts_channel_new_with_factory (TpSimpleClientFactory *factory,
+    TpConnection *conn, const gchar *object_path,
+    GHashTable *immutable_properties, GError **error);
 
 void tp_yts_channel_request_async (TpYtsChannel *self,
     GCancellable *cancellable, GAsyncReadyCallback callback,

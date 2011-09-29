@@ -24,6 +24,8 @@
 
 #include "account-manager.h"
 
+#include "client-factory.h"
+
 #include <telepathy-glib/defs.h>
 #include <telepathy-glib/gtypes.h>
 #include <telepathy-glib/interfaces.h>
@@ -79,17 +81,45 @@
 
 G_DEFINE_TYPE (TpYtsAccountManager, tp_yts_account_manager, TP_TYPE_PROXY);
 
+struct _TpYtsAccountManagerPrivate
+{
+  /* We have to store this and not simply subclass it because that
+   * would change TpProxy:object-path from
+   * /org/freedesktop/Telepathy/AccountManager to
+   * /com/meego/xpmn/ytstenut/AccountManager which would mean loads of
+   * things (like how TpAM calls GetAll on ofdTp.AM) would stop
+   * working. This is a shame. Oh well. */
+  TpAccountManager *account_manager;
+};
+
 static void
 tp_yts_account_manager_init (TpYtsAccountManager *self)
 {
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, TP_TYPE_YTS_ACCOUNT_MANAGER,
+      TpYtsAccountManagerPrivate);
+}
 
+static void
+tp_yts_account_manager_dispose (GObject *object)
+{
+  TpYtsAccountManager *self = TP_YTS_ACCOUNT_MANAGER (object);
+  TpYtsAccountManagerPrivate *priv = self->priv;
+
+  tp_clear_object (&priv->account_manager);
+
+  G_OBJECT_CLASS (tp_yts_account_manager_parent_class)->dispose (object);
 }
 
 static void
 tp_yts_account_manager_class_init (TpYtsAccountManagerClass *klass)
 {
+  GObjectClass *object_class = (GObjectClass *) klass;
   TpProxyClass *proxy_class = (TpProxyClass *) klass;
   GType tp_type = TP_TYPE_YTS_ACCOUNT_MANAGER;
+
+  g_type_class_add_private (klass, sizeof (TpYtsAccountManagerPrivate));
+
+  object_class->dispose = tp_yts_account_manager_dispose;
 
   proxy_class->interface = TP_YTS_IFACE_QUARK_ACCOUNT_MANAGER;
 
@@ -116,6 +146,7 @@ TpYtsAccountManager *
 tp_yts_account_manager_new (TpDBusDaemon *bus_daemon)
 {
   TpYtsAccountManager *self;
+  TpSimpleClientFactory *factory;
 
   g_return_val_if_fail (TP_IS_DBUS_DAEMON (bus_daemon), NULL);
 
@@ -125,6 +156,10 @@ tp_yts_account_manager_new (TpDBusDaemon *bus_daemon)
           "bus-name", MC5_BUS_NAME,
           "object-path", TP_YTS_ACCOUNT_MANAGER_OBJECT_PATH,
           NULL));
+
+  factory = tp_yts_client_factory_new (bus_daemon);
+  self->priv->account_manager = tp_account_manager_new_with_factory (factory);
+  g_object_unref (factory);
 
   return self;
 }
@@ -150,6 +185,7 @@ TpYtsAccountManager *
 tp_yts_account_manager_dup (void)
 {
   TpDBusDaemon *dbus;
+  TpYtsAccountManager *self;
 
   if (starter_account_manager_proxy != NULL)
     return g_object_ref (starter_account_manager_proxy);
@@ -166,7 +202,40 @@ tp_yts_account_manager_dup (void)
 
   g_object_unref (dbus);
 
+  self = starter_account_manager_proxy;
+
+  tp_account_manager_set_default (self->priv->account_manager);
+
   return starter_account_manager_proxy;
+}
+
+/**
+ * tp_yts_account_manager_ensure_account:
+ * @self: a #TpYtsAccountManager
+ * @path: the account object path
+ * @error: a #GError to fill when an error is encountered
+ *
+ * Using the #TpYtsAccountManager ensure an account with object path
+ * @path. This should be used instead of tp_account_new() as it means
+ * the #TpYtsClientFactory will be propagated through to the new
+ * account and so new channel objects will be turned into
+ * #TpYtsChannel<!-- -->s.
+ *
+ * Returns: a #TpAccount
+ */
+TpAccount *
+tp_yts_account_manager_ensure_account (TpYtsAccountManager *self,
+    const gchar *path,
+    GError **error)
+{
+  TpSimpleClientFactory *factory;
+
+  g_return_val_if_fail (TP_IS_YTS_ACCOUNT_MANAGER (self), NULL);
+  g_return_val_if_fail (!tp_str_empty (path), NULL);
+
+  factory = tp_proxy_get_factory (self->priv->account_manager);
+
+  return tp_simple_client_factory_ensure_account (factory, path, NULL, error);
 }
 
 static void
@@ -203,6 +272,7 @@ on_account_manager_get_account_returned (TpProxy *proxy,
     gpointer user_data,
     GObject *weak_object)
 {
+  TpYtsAccountManager *self = TP_YTS_ACCOUNT_MANAGER (weak_object);
   GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
   TpAccount *account;
   GError *err = NULL;
@@ -211,7 +281,10 @@ on_account_manager_get_account_returned (TpProxy *proxy,
   if (error == NULL)
     {
       path = g_value_get_boxed (value);
-      account = tp_account_new (tp_proxy_get_dbus_daemon (proxy), path, &err);
+
+      account = tp_simple_client_factory_ensure_account (
+          tp_proxy_get_factory (self->priv->account_manager),
+          path, NULL, &err);
       if (err == NULL)
         {
           tp_proxy_prepare_async (account, NULL, on_account_prepared,

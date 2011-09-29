@@ -6,6 +6,7 @@ TpYtsAccountManager
 TpYtsAccountManagerClass
 tp_yts_account_manager_new
 tp_yts_account_manager_dup
+tp_yts_account_manager_ensure_account
 tp_yts_account_manager_get_account_async
 tp_yts_account_manager_get_account_finish
 tp_yts_account_manager_hold
@@ -111,6 +112,7 @@ TP_YTS_SVC_STATUS_GET_CLASS
 TpYtsChannel
 TpYtsChannelClass
 tp_yts_channel_new_from_properties
+tp_yts_channel_new_with_factory
 tp_yts_channel_request_async
 tp_yts_channel_request_finish
 tp_yts_channel_reply_async
@@ -165,6 +167,22 @@ TP_YTS_CHANNEL_FACTORY_GET_CLASS
 TP_TYPE_YTS_CHANNEL_FACTORY
 TP_IS_YTS_CHANNEL_FACTORY
 TP_IS_YTS_CHANNEL_FACTORY_CLASS
+</SECTION>
+
+<SECTION>
+<FILE>client-factory</FILE>
+tp_yts_client_factory_new
+TpYtsClientFactory
+TpYtsClientFactoryClass
+<SUBSECTION Standard>
+tp_yts_client_factory_get_type
+TpYtsClientFactoryPrivate
+TP_YTS_CLIENT_FACTORY
+TP_YTS_CLIENT_FACTORY_CLASS
+TP_YTS_CLIENT_FACTORY_GET_CLASS
+TP_TYPE_YTS_CLIENT_FACTORY
+TP_IS_YTS_CLIENT_FACTORY
+TP_IS_YTS_CLIENT_FACTORY_CLASS
 </SECTION>
 
 <SECTION>
