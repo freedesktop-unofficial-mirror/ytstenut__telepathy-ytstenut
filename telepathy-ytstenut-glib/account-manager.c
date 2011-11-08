@@ -150,14 +150,16 @@ tp_yts_account_manager_new (TpDBusDaemon *bus_daemon)
 
   g_return_val_if_fail (TP_IS_DBUS_DAEMON (bus_daemon), NULL);
 
+  factory = tp_yts_client_factory_new (bus_daemon);
+
   self = TP_YTS_ACCOUNT_MANAGER (g_object_new (TP_TYPE_YTS_ACCOUNT_MANAGER,
           "dbus-daemon", bus_daemon,
           "dbus-connection", ((TpProxy *) bus_daemon)->dbus_connection,
           "bus-name", MC5_BUS_NAME,
           "object-path", TP_YTS_ACCOUNT_MANAGER_OBJECT_PATH,
+          "factory", factory,
           NULL));
 
-  factory = tp_yts_client_factory_new (bus_daemon);
   self->priv->account_manager = tp_account_manager_new_with_factory (factory);
   g_object_unref (factory);
 
