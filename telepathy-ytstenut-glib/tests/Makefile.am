@@ -25,4 +25,5 @@ noinst_PROGRAMS = \
 	server-client-ping \
 	server-nosey-status \
 	server-passing-service \
-	server-passing-status
+	server-passing-status \
+	server-file-transfer

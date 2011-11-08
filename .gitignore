@@ -55,6 +55,7 @@ tp-glib-tools/telepathy-glib-env
 /telepathy-ytstenut-glib/tests/server-nosey-status
 /telepathy-ytstenut-glib/tests/server-passing-service
 /telepathy-ytstenut-glib/tests/server-passing-status
+/telepathy-ytstenut-glib/tests/server-file-transfer
 
 /docs/reference/xml
 /docs/reference/html
