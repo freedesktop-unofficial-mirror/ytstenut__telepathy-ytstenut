@@ -174,8 +174,7 @@ get_contact_cb (TpConnection *connection,
       client = tp_yts_client_new (local_service, account);
       tp_yts_client_register (client, NULL);
 
-      /* So let's request a channel to ourselves. It's to ourselves
-       * because that's where client-pong is being run (hopefully!) */
+      /* So let's request a channel to 'contact'. */
       tp_yts_client_request_channel_async (client,
           contact, /* the TpContact we want the channel to go to */
           remote_service, /* the remote service name */
