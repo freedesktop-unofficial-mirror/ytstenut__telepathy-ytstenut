@@ -157,7 +157,7 @@ account_prepared_cb (GObject *source_object,
   TpAccount *account = TP_ACCOUNT (source_object);
   GError *error = NULL;
 
-  if (!tp_account_prepare_finish (account, result, &error))
+  if (!tp_proxy_prepare_finish (account, result, &error))
     {
       g_print ("failed to prepare account: %s\n", error->message);
       g_clear_error (&error);
@@ -189,7 +189,7 @@ main (int argc,
   account = tp_yts_account_manager_ensure_account (am, path, NULL);
   g_free (path);
 
-  tp_account_prepare_async (account, NULL, account_prepared_cb, NULL);
+  tp_proxy_prepare_async (account, NULL, account_prepared_cb, NULL);
 
   loop = g_main_loop_new (NULL, FALSE);
   g_main_loop_run (loop);
