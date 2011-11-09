@@ -24,6 +24,7 @@
 
 #include <telepathy-glib/account.h>
 
+static gboolean persist = FALSE;
 static GMainLoop *loop = NULL;
 
 static void
@@ -48,7 +49,9 @@ reply_cb (GObject *source_object,
     g_print ("Successfully replied\n");
 
   g_clear_error (&error);
-  getoutofhere ();
+
+  if (!persist)
+    getoutofhere ();
 }
 
 static void
@@ -133,11 +136,14 @@ main (int argc,
   if (argc < 3
       || !tp_dbus_check_valid_interface_name (argv[2], NULL))
     {
-      g_print ("usage: %s [account] [service name]\n", argv[0]);
+      g_print ("usage: %s [account] [service name] [--persist]\n", argv[0]);
       return 1;
     }
 
   g_type_init ();
+
+  if (argc == 4)
+    persist = g_str_equal (argv[3], "--persist");
 
   am = tp_yts_account_manager_dup ();
 
