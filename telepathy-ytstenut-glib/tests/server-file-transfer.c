@@ -78,6 +78,16 @@ state_changed_cb (TpFileTransferChannel *channel,
 }
 
 static void
+transferred_bytes_cb (TpFileTransferChannel *channel,
+    GParamSpec *pspec,
+    gpointer user_data)
+{
+  guint64 bytes = tp_file_transfer_channel_get_transferred_bytes (channel);
+
+  g_print ("transferred %" G_GUINT64_FORMAT " bytes...\n", bytes);
+}
+
+static void
 create_and_handle_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
@@ -96,7 +106,11 @@ create_and_handle_cb (GObject *source,
       return;
     }
 
-  g_signal_connect (channel, "notify::state", G_CALLBACK (state_changed_cb), NULL);
+  g_signal_connect (channel, "notify::state",
+      G_CALLBACK (state_changed_cb), NULL);
+  g_signal_connect (channel, "notify::transferred-bytes",
+      G_CALLBACK (transferred_bytes_cb), NULL);
+
 }
 
 static void
@@ -219,6 +233,8 @@ handle_channels_cb (TpSimpleHandler *handler,
 
       g_signal_connect (chan, "notify::state",
           G_CALLBACK (state_changed_cb), NULL);
+      g_signal_connect (chan, "notify::transferred-bytes",
+          G_CALLBACK (transferred_bytes_cb), NULL);
 
       g_print ("handling file transfer channel: %s\n",
           tp_proxy_get_object_path (chan));
