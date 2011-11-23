@@ -187,7 +187,7 @@ if test x$enable_glib = xyes; then
   AC_SUBST(DBUS_LIBS)
 
   dnl Check for telepathy-glib
-  PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.15.5])
+  PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.17.1])
 
   AC_SUBST(TP_GLIB_CFLAGS)
   AC_SUBST(TP_GLIB_LIBS)
