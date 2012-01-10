@@ -2,8 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = \
 	tp-qt4-tools \
-	tp-glib-tools \
-	docs
+	tp-glib-tools
 
 if ENABLE_QT4
 SUBDIRS += TelepathyYtstenutQt4
@@ -12,6 +11,9 @@ endif
 if ENABLE_GLIB
 SUBDIRS += telepathy-ytstenut-glib
 endif
+
+# Build docs last because they depend on generated dbus headers
+SUBDIRS += docs
 
 GIT = git
 GZIP = gzip
