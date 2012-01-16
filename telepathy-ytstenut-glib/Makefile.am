@@ -84,7 +84,8 @@ AM_CFLAGS = \
 	@DBUS_CFLAGS@ \
 	@GLIB_CFLAGS@ \
 	@TP_GLIB_CFLAGS@ \
-	-I$(top_srcdir)
+	-I$(top_srcdir) \
+	-I$(top_builddir)/telepathy-ytstenut-glib/extensions
 
 AM_LDFLAGS = \
 	@DBUS_LIBS@ \
