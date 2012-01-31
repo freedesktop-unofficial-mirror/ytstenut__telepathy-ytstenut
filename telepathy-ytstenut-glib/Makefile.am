@@ -46,7 +46,7 @@ nodist_libtelepathy_ytstenut_glib_la_SOURCES = \
     _gen/svc.c
 
 libtelepathy_ytstenut_glib_la_LDFLAGS = \
-    -version-info "$(LT_CURRENT)":"$(LT_REVISION)":"$(LT_AGE)"
+     -no-undefined -version-info "$(LT_CURRENT)":"$(LT_REVISION)":"$(LT_AGE)"
 
 libtelepathy_ytstenut_glib_la_LIBADD = \
 	$(builddir)/extensions/libfuture-extensions.la
