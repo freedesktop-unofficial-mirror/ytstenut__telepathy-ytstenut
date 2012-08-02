@@ -168,14 +168,17 @@ fi
 
 if test x$enable_glib = xyes; then
    dnl Check for Glib
-   PKG_CHECK_MODULES(GLIB, [
-	glib-2.0 >= 2.16,
-	gobject-2.0 >= 2.16,
-	gthread-2.0 >= 2.16,
-	gio-2.0 >= 2.16])
+   PKG_CHECK_MODULES([GLIB], [
+	glib-2.0 >= 2.30,
+	gobject-2.0 >= 2.30,
+	gthread-2.0 >= 2.30,
+	gio-2.0 >= 2.30])
 
   AC_SUBST(GLIB_CFLAGS)
   AC_SUBST(GLIB_LIBS)
+
+  AC_DEFINE([GLIB_VERSION_MIN_REQUIRED], [GLIB_VERSION_2_30], [Ignore post 2.30 deprecations])
+  AC_DEFINE([GLIB_VERSION_MAX_ALLOWED], [GLIB_VERSION_2_30], [Prevent post 2.30 APIs])
 
   GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
   AC_SUBST(GLIB_GENMARSHAL)
@@ -187,10 +190,13 @@ if test x$enable_glib = xyes; then
   AC_SUBST(DBUS_LIBS)
 
   dnl Check for telepathy-glib
-  PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.17.1])
+  PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.18])
 
   AC_SUBST(TP_GLIB_CFLAGS)
   AC_SUBST(TP_GLIB_LIBS)
+
+  AC_DEFINE([TP_VERSION_MIN_REQUIRED], [TP_VERSION_0_18], [Ignore post 0.18 deprecations])
+  AC_DEFINE([TP_VERSION_MAX_ALLOWED], [TP_VERSION_0_18], [Prevent post 0.18 APIs])
 fi
 
 dnl Check for code generation tools
