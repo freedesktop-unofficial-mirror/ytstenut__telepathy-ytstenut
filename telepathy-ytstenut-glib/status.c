@@ -488,7 +488,7 @@ tp_yts_status_class_init (TpYtsStatusClass *klass)
   tp_proxy_or_subclass_hook_on_interface_add (tp_type,
       tp_yts_status_add_signals);
   tp_proxy_subclass_add_error_mapping (tp_type,
-      TP_ERROR_PREFIX, TP_ERRORS, TP_TYPE_ERROR);
+      TP_ERROR_PREFIX, TP_ERROR, TP_TYPE_ERROR);
 }
 
 static void
@@ -685,7 +685,7 @@ on_account_timeout (gpointer user_data)
 
   g_signal_handler_disconnect (data->account, data->handler_id);
 
-  g_simple_async_result_set_error (data->res, TP_ERRORS,
+  g_simple_async_result_set_error (data->res, TP_ERROR,
       TP_ERROR_DISCONNECTED, "The account is not connected");
   g_simple_async_result_complete (data->res);
   g_object_unref (data->res);

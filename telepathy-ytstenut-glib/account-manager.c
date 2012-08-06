@@ -127,7 +127,7 @@ tp_yts_account_manager_class_init (TpYtsAccountManagerClass *klass)
   tp_proxy_or_subclass_hook_on_interface_add (tp_type,
       tp_yts_account_manager_add_signals);
   tp_proxy_subclass_add_error_mapping (tp_type,
-      TP_ERROR_PREFIX, TP_ERRORS, TP_TYPE_ERROR);
+      TP_ERROR_PREFIX, TP_ERROR, TP_TYPE_ERROR);
 }
 
 /**
